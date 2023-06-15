@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Box, Text } from 'grommet';
+import { useAppState } from '../context/appStateContext';
 
 const Timer = () => {
   const [minutes, setMinutes] = useState(25);
-  const [seconds, setSeconds] = useState(0);
+  const [seconds, setSeconds] = useState(5);
   const [isRunning, setIsRunning] = useState(false);
   const [breakTime, setBreakTime] = useState(false);
   const [cycles, setCycles] = useState(0);
+  const {state, dispatch} = useAppState();
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
@@ -35,11 +37,19 @@ const Timer = () => {
   }, [isRunning, seconds]);
 
   const startTimer = () => {
+    // select the task
+    dispatch({type: "SET_CURRENT_TASK", task: state.tasks[0]});
+
+    // start the timer
     setIsRunning(true);
+
+    // update the task
+    dispatch({type: "START_SESSION"});
   };
 
   const pauseTimer = () => {
     setIsRunning(false);
+    dispatch({type: "END_SESSION"});
   };
 
   const resetTimer = () => {
@@ -55,9 +65,14 @@ const Timer = () => {
       <Text>{`${minutes.toString().padStart(2, '0')}:${seconds
         .toString()
         .padStart(2, '0')}`}</Text>
-      <button onClick={startTimer}>Start</button>
-      <button onClick={pauseTimer}>Pause</button>
-      <button onClick={resetTimer}>Reset</button>
+      {
+        isRunning ? (
+            <button onClick={pauseTimer}>Pause</button>
+        ) : (
+            <button onClick={startTimer}>Start</button>
+        )
+
+      }
     </Box>
   );
 };
