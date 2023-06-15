@@ -23,37 +23,37 @@ const TaskPage: FC = () => {
 
   // inside TaskPage component
   const handleCreateOrUpdate = async (task: Task) => {
-    if (task.id) {
-      // Update the task
-      const response = await fetch(`/api/tasks/${task.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-      const data = await response.json();
+    // if (task.id) {
+    //   // Update the task
+    //   const response = await fetch(`/api/tasks/${task.id}`, {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(task),
+    //   });
+    //   const data = await response.json();
 
-      //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
-      dispatch({ type: "UPDATE_TASK", task: data });
-    } else {
-      // Create a new task
-      //   console.log(user);
-      const response = await fetch("/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-      console.log(response);
-      const data = await response.json();
+    //   //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
+    //   dispatch({ type: "UPDATE_TASK", task: data });
+    // } else {
+    //   // Create a new task
+    //   //   console.log(user);
+    //   const response = await fetch("/api/tasks", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(task),
+    //   });
+    //   console.log(response);
+    //   const data = await response.json();
 
-      //   setTasks([...tasks, data]);
-      dispatch({ type: "ADD_TASK", task: data });
-    }
+    //   //   setTasks([...tasks, data]);
+    //   dispatch({ type: "ADD_TASK", task: data });
+    // }
 
-    setCurrentTask(null);
+    // setCurrentTask(null);
   };
 
   const handleEdit = (task: Task) => {
@@ -70,8 +70,8 @@ const TaskPage: FC = () => {
 
   return (
     <Box>
-      <Heading level="2">Tasks</Heading>
-      <TaskForm
+      <Heading level="3">Todo todo...... ting...... dong</Heading>
+      {/* <TaskForm
         task={
           currentTask || {
             title: "",
@@ -82,7 +82,7 @@ const TaskPage: FC = () => {
           }
         }
         onSubmit={handleCreateOrUpdate}
-      />
+      /> */}
       <TaskList
         tasks={state.tasks}
         onDelete={handleDelete}

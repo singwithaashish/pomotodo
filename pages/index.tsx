@@ -2,36 +2,68 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import TaskPage from "@/components/tasks/TaskPage";
-import { Button, Grommet, Header, Menu, grommet } from "grommet";
+import {
+  Button,
+  Grid,
+  Grommet,
+  Header,
+  Layer,
+  Main,
+  Menu,
+  grommet,
+} from "grommet";
 import MyHeader from "@/components/layout/MyHeader";
 import Timer from "@/components/pomodoro/Timer";
+import MyTimer from "@/components/pomodoro/Timer";
+import { useState } from "react";
+// import the css home.module.css
+import "@/styles/Home.module.css";
+import { useAppState } from "@/components/context/appStateContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const theme = {
   global: {
     colors: {
-      brand: '#228BE6',
+      brand: "#Faaaaa",
     },
     font: {
-      family: 'Roboto',
-      size: '18px',
-      height: '20px',
+      family: "Roboto",
+      size: "18px",
+      height: "20px",
     },
   },
   button: {
     border: {
-      radius: '5px',
+      radius: "5px",
     },
     extend: {
-      ':hover': {
-        backgroundColor: '#F0F0F0',
+      ":hover": {
+        backgroundColor: "#F0F0F0",
       },
+    },
+  },
+  clock: {
+    analog: {
+      minute: {
+        size: "1000px",
+      },
+      // hour: {
+      //   size: '80px',
+      // },
+      // second: {
+      //   size: '60px',
+      // },
+      // size: {
+      //   medium: '200px',
+      // },
     },
   },
 };
 
 export default function Home() {
+  const {state, dispatch} = useAppState();
+
   return (
     <>
       <Head>
@@ -42,11 +74,24 @@ export default function Home() {
       </Head>
 
       <Grommet theme={theme}>
-      <MyHeader />
-      <main className={""}>
-        <Timer />
-        <TaskPage />
-      </main>
+        {
+          !state.isSessionActive && 
+        <MyHeader /> 
+        }
+        <Main style={state.isSessionActive ? {
+          backgroundColor: "#e5e7eb",
+          animation: 'fadeToBlack 1s forwards',
+        }:
+          {
+            backgroundColor: "#e5e7eb",
+          animation: 'fadeFromBlack 1s forwards',
+        }}
+        >
+          <Grid columns={["2/4", "2/4"]} gap="small">
+            <MyTimer />
+            <TaskPage />
+          </Grid>
+        </Main>
       </Grommet>
     </>
   );

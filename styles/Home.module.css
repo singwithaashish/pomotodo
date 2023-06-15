@@ -225,3 +225,27 @@
     transform: rotate(0deg);
   }
 } */
+
+
+@keyframes rotatingPulse {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+@keyframes rotatingPulseLeft {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(-180deg); }
+  100% { transform: scale(1) rotate(-360deg); }
+}
+
+.rotatingPulsatingSquare {
+  background-color: red;
+  animation: rotatingPulse 5.1s ease-in-out infinite;
+}
+
+.rotatingPulsatingSquareLeft{
+  animation: rotatingPulseLeft 5s ease-in-out infinite;
+}
+
+
+

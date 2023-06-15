@@ -106,8 +106,56 @@ a {
   }
 } */
 
+
+
 body{
   margin: 0;
   padding: 0;
+  /* background-color: black; */
   /* font-family: 'Roboto', sans-serif; */
+}
+
+
+@keyframes fadeToBlack {
+  0% { background-color: "#e5e7eb"; }
+  100% { background-color: black; }
+}
+
+
+@keyframes fadeFromBlack {
+  0% { background-color: black; }
+  100% { background-color: "#e5e7eb"; }
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(5px, 10px); }
+}
+
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+
+@keyframes rotatingPulse {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+@keyframes rotatingPulseLeft {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(-180deg); }
+  100% { transform: scale(1) rotate(-360deg); }
+}
+
+@keyframes headerFadeUp {
+  0% { opacity: 0; transform: translate(0, 10px); }
+  100% { opacity: 1; transform: translate(0, 0); }
+}
+
+@keyframes headerFadeDown {
+  0% { opacity: 0; transform: translate(0, -10px); }
+  100% { opacity: 1; transform: translate(0, 0); }
 }

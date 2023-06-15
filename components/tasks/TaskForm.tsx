@@ -1,16 +1,21 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Button, Form, FormField, TextInput, Box, DateInput } from "grommet";
-import { Task, TaskFormProps } from "@/typings";
+import { Task } from "@/typings";
+import { HexColorInput, HexColorPicker } from "react-colorful";
+import { useAppState } from "../context/appStateContext";
 
 
 
+interface TaskFormProps {
+    setShowTodoForm: (show: boolean) => void;
+}
 
-
-const TaskForm = ({ task: initialTask, onSubmit }: TaskFormProps) => {
+const TaskForm = ({setShowTodoForm} : TaskFormProps) => {
+    const {state, dispatch} = useAppState();
+    const initialTask = state.editingTask;
   const [task, setTask] = useState<Task>(
-    initialTask || { title: "", description: "", dueDate: "", tomatoes: 0, color: "" }
+    state.editingTask || { title: "", description: "", dueDate: "", tomatoes: 0, color: "" }
   );
-  const [date, setDate] = useState<string>("");
 
   useEffect(() => {
     setTask(
@@ -25,9 +30,47 @@ const TaskForm = ({ task: initialTask, onSubmit }: TaskFormProps) => {
     });
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    onSubmit(task);
+    // onSubmit(task);
+    if (task.id) {
+        // Update the task
+        const response = await fetch(`/api/tasks/${task.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        });
+        const data = await response.json();
+  
+        //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
+        dispatch({ type: "UPDATE_TASK", task: data });
+      } else {
+        // Create a new task
+        //   console.log(user);
+        const response = await fetch("/api/tasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        });
+        console.log(response);
+        const data = await response.json();
+  
+        //   setTasks([...tasks, data]);
+        dispatch({ type: "ADD_TASK", task: data });
+      }
+      dispatch({type: "SET_EDITING_TASK", task: {
+        title: "",
+        description: "",
+        dueDate: "",
+        tomatoes: 0,
+        color: ""
+      }});
+      setShowTodoForm(false);
+    //   setCurrentTask(null);
   };
 
 
@@ -49,6 +92,18 @@ const TaskForm = ({ task: initialTask, onSubmit }: TaskFormProps) => {
             }
         } value={task.dueDate} />
       </FormField>
+      
+      <FormField name="color" htmlFor="color-input-id" label="Color">
+        <HexColorPicker id="color-input-id" onChange={
+            (event) => {
+                setTask({
+                    ...task,
+                    color: event
+                })
+            }
+        } color={task.color} />
+        
+        </FormField>
       <FormField name="tomatoes" htmlFor="number-input-id" label="Tomatoes">
         <input
           id="number-input-id"

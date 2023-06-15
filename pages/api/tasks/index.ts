@@ -1,24 +1,27 @@
-import { PrismaClient } from '@prisma/client'
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from '@auth0/nextjs-auth0';
+import { PrismaClient } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "@auth0/nextjs-auth0";
 
 const prisma = new PrismaClient();
 
-export default async function handle(req: NextApiRequest, res: NextApiResponse) {
+export default async function handle(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getSession(req, res);
   const userId = session?.user.sub;
 
-  if (req.method === 'GET') {
+  if (req.method === "GET") {
     const tasks = await prisma.task.findMany({
       where: {
-        userId: userId
+        userId: userId,
       },
-        orderBy: {
-            updatedAt: 'desc'
-        }
+      orderBy: {
+        updatedAt: 'desc',
+      },
     });
     res.json(tasks);
-  } else if (req.method === 'POST') {
+  } else if (req.method === "POST") {
     const task = req.body;
     const result = await prisma.task.create({
       data: {
