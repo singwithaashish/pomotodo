@@ -4,8 +4,32 @@ import { Inter } from "next/font/google";
 import TaskPage from "@/components/tasks/TaskPage";
 import { Button, Grommet, Header, Menu, grommet } from "grommet";
 import MyHeader from "@/components/layout/MyHeader";
+import Timer from "@/components/pomodoro/Timer";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const theme = {
+  global: {
+    colors: {
+      brand: '#228BE6',
+    },
+    font: {
+      family: 'Roboto',
+      size: '18px',
+      height: '20px',
+    },
+  },
+  button: {
+    border: {
+      radius: '5px',
+    },
+    extend: {
+      ':hover': {
+        backgroundColor: '#F0F0F0',
+      },
+    },
+  },
+};
 
 export default function Home() {
   return (
@@ -17,9 +41,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Grommet theme={grommet}>
+      <Grommet theme={theme}>
       <MyHeader />
       <main className={""}>
+        <Timer />
         <TaskPage />
       </main>
       </Grommet>

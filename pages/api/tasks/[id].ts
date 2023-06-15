@@ -11,6 +11,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
   if (req.method === 'PUT') {
     const task = req.body;
+    console.log(userId);
     const result = await prisma.task.update({
       where: {
         id: Number(id)

@@ -12,7 +12,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const tasks = await prisma.task.findMany({
       where: {
         userId: userId
-      }
+      },
+        orderBy: {
+            updatedAt: 'desc'
+        }
     });
     res.json(tasks);
   } else if (req.method === 'POST') {
@@ -20,7 +23,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const result = await prisma.task.create({
       data: {
         ...task,
-        userId: userId,
+        userId: userId.toString(),
       },
     });
     res.json(result);

@@ -1,9 +1,11 @@
 export type Task = {
-  id?: string;
+  id?: number;
   title: string;
   description: string;
   dueDate: string;
+  color: string;
   tomatoes: number;
+  timeSpent?: number;
 };
 
 export type TaskFormProps = {
@@ -16,3 +18,12 @@ type TaskListProps = {
   onDelete: (task: Task) => void;
   onEdit: (task: Task) => void;
 };
+
+export type WorkDay = {
+    id?: number;
+    date: string;
+    totalSeconds: number;
+    userId: string;
+}
+
+

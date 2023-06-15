@@ -8,13 +8,13 @@ import { Task, TaskFormProps } from "@/typings";
 
 const TaskForm = ({ task: initialTask, onSubmit }: TaskFormProps) => {
   const [task, setTask] = useState<Task>(
-    initialTask || { title: "", description: "", dueDate: "", tomatoes: 0 }
+    initialTask || { title: "", description: "", dueDate: "", tomatoes: 0, color: "" }
   );
   const [date, setDate] = useState<string>("");
 
   useEffect(() => {
     setTask(
-      initialTask || { title: "", description: "", dueDate: "", tomatoes: 0 }
+      initialTask || { title: "", description: "", dueDate: "", tomatoes: 0, color: "" }
     );
   }, [initialTask]);
 

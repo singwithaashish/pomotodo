@@ -11,23 +11,34 @@ datasource db {
 }
 
 model Task {
-  id        Int      @id @default(autoincrement())
-  title     String
-  description String
-  dueDate   DateTime
-  tomatoes  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id              Int               @id @default(autoincrement())
+  title           String
+  description     String
+  dueDate         DateTime
+  color           String
+  tomatoes        Int
+  timeSpent       Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
 
   @@index([userId], name: "userId")
 }
 
+model WorkDay {
+  id           Int      @id @default(autoincrement())
+  date         DateTime
+  totalSeconds Int
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+}
+
 model User {
-  id    String  @id @default(uuid())
-  email String  @unique
-  name  String?
-  tasks Task[]
+  id      String    @id @default(uuid())
+  email   String    @unique
+  name    String?
+  tasks   Task[]
+  WorkDay WorkDay[]
 }
 
