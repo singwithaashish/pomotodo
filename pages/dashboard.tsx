@@ -7,12 +7,24 @@ import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { User } from "@prisma/client";
 import exp from "constants";
 import { Box, DataTable, Grid, Header } from "grommet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const { user, error, isLoading } = useUser();
   const { state, dispatch } = useAppState();
+
   const [leaderboardData, setLeaderboardData] = useState<User[]>([]);
+
+  useEffect(() => {
+    // Fetch tasks here and setTasks
+    const fetchTasks = async () => {
+      const response = await fetch("/api/tasks");
+      const data = await response.json();
+      //   setTasks(data);
+      dispatch({ type: "SET_TASKS", tasks: data });
+    };
+    fetchTasks();
+  }, []);
 
   return (
     <Grid

@@ -10,6 +10,7 @@ import {
   Layer,
   Main,
   Menu,
+  ResponsiveContext,
   grommet,
 } from "grommet";
 import MyHeader from "@/components/layout/MyHeader";
@@ -39,9 +40,16 @@ const theme = {
     },
     extend: {
       ":hover": {
-        backgroundColor: "#F0F0F0",
+        backgroundColor: "#ea580c",
       },
     },
+    // color: "white",
+    // background color:
+    primary: {
+      color: "#ea580c",
+      background: "#ea580c",
+    },
+
   },
   clock: {
     analog: {
@@ -74,10 +82,10 @@ export default function Home() {
       </Head>
 
       <Grommet theme={theme}>
-        {
+        {/* {
           !state.isSessionActive && 
         <MyHeader /> 
-        }
+        } */}
         <Main style={state.isSessionActive ? {
           backgroundColor: "#e5e7eb",
           animation: 'fadeToBlack 1s forwards',
@@ -87,10 +95,14 @@ export default function Home() {
           animation: 'fadeFromBlack 1s forwards',
         }}
         >
-          <Grid columns={["2/4", "2/4"]} gap="small">
+          <ResponsiveContext.Consumer>
+          {(size) =>
+          <Grid columns={size === 'small' ? ['full'] : ['2/4', '2/4']} gap="small">
             <MyTimer />
             <TaskPage />
           </Grid>
+          }
+          </ResponsiveContext.Consumer>
         </Main>
       </Grommet>
     </>

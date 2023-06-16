@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { Box, Heading } from "grommet";
+import { Box, Button, Heading, Layer } from "grommet";
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
 import { Task } from "@/typings";
@@ -8,7 +8,8 @@ import { AppStateContext, useAppState } from "../context/appStateContext";
 const TaskPage: FC = () => {
   //   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
-  const { state, dispatch } = useAppState();
+  const [showTodoForm, setShowTodoForm] = useState(false);
+    const {state, dispatch} = useAppState();
 
   useEffect(() => {
     // Fetch tasks here and setTasks
@@ -70,7 +71,31 @@ const TaskPage: FC = () => {
 
   return (
     <Box>
-      <Heading level="3">Todo todo...... ting...... dong</Heading>
+      <Box direction="row" justify="between" align="center">
+      <Heading level="3">Tasks</Heading>
+      <Button label="Add Task" onClick={() => setShowTodoForm(true)} />
+      </Box>
+      {
+          (showTodoForm || state.editingTask?.title )
+           &&  (
+            <Layer
+              onEsc={() => setShowTodoForm(false)}
+              onClickOutside={() => setShowTodoForm(false)}
+              style={{
+               
+                overflow: "auto",
+              }}
+            >
+                <Box pad="medium" gap="small" width="medium">
+                    <Heading level={3} margin="none">
+                        Add Todo
+                    </Heading>
+                    <TaskForm  setShowTodoForm={setShowTodoForm}/>
+                </Box>
+            </Layer>
+          )
+        }
+          
       {/* <TaskForm
         task={
           currentTask || {

@@ -13,6 +13,7 @@ type State = {
 type Action =
   | { type: "SET_TASKS"; tasks: Task[] }
   | { type: "ADD_TASK"; task: Task }
+  | {type: "COMPLETE_TASK"; task: Task}
   | { type: "UPDATE_TASK"; task: Task }
   | { type: "DELETE_TASK"; taskId: number }
   | { type: "SET_EDITING_TASK"; task: Task }
@@ -40,6 +41,13 @@ function reducer(state: State, action: Action): State {
       return { ...state, tasks: action.tasks };
     case "ADD_TASK":
       return { ...state, tasks: [...state.tasks, action.task] };
+    case "COMPLETE_TASK":
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.task.id ? action.task : task
+        ),
+      };
     case "UPDATE_TASK":
       return {
         ...state,

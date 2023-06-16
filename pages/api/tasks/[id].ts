@@ -9,6 +9,9 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
   const userId = session?.user.sub;
   const { id } = req.query;
 
+  try{
+    console.log(req.body);
+
   if (req.method === 'PUT') {
     const task = req.body;
     const result = await prisma.task.update({
@@ -33,6 +36,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     throw new Error(
       `The HTTP ${req.method} method is not supported at this route.`
     );
+  }
+
+  } catch (e: Error | any) {
+    res.status(500).json({ error: e.message });
   }
 }
 

@@ -2,6 +2,7 @@ export type Task = {
   updatedAt?: string;
   id?: number;
   title: string;
+  completed?: boolean;
   description: string;
   dueDate: string;
   color: string;
