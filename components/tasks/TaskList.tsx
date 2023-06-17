@@ -12,17 +12,17 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
   const { state, dispatch } = useAppState();
   const [showTodoForm, setShowTodoForm] = useState(false);
 
-  const toggleAnimationCompleted = (value: boolean) => {
-    console.log(animationCompleted, state.isSessionActive);
-    setAnimationCompleted(value);
-  };
+  // const toggleAnimationCompleted = (value: boolean) => {
+  //   console.log(animationCompleted, state.isSessionActive);
+  //   setAnimationCompleted(value);
+  // };
 
-  useEffect(() => {
-    setAnimationCompleted(false);
-  }, [state.isSessionActive]);
+  // useEffect(() => {
+  //   setAnimationCompleted(false);
+  // }, [state.isSessionActive]);
 
   return !(
-    animationCompleted &&
+    // animationCompleted &&
     state.isSessionActive &&
     state.sessionType === "work"
     && false
@@ -76,7 +76,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           onDelete={onDelete}
           onEdit={onEdit}
           index={i}
-          toggleAnimationCompleted={toggleAnimationCompleted}
+          setAnimationCompleted={setAnimationCompleted}
+          animationCompleted={animationCompleted}
+          // toggleAnimationCompleted={toggleAnimationCompleted}
         />
       ))}
       <Box
@@ -156,7 +158,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
         primary
         onClick={() => {
           dispatch({ type: "END_SESSION" });
-          setAnimationCompleted(true);
+          // setAnimationCompleted(true);
         }}
       />
       <Box

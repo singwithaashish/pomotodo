@@ -9,7 +9,8 @@ interface TaskComponentProps {
   onDelete: (task: Task) => void;
   onEdit: (task: Task) => void;
   index: number;
-  toggleAnimationCompleted: (value: boolean) => void;
+  setAnimationCompleted: any,
+  animationCompleted: boolean;
 }
 
 export default function TaskComponent({
@@ -17,61 +18,20 @@ export default function TaskComponent({
   onDelete,
   onEdit,
   index,
-  toggleAnimationCompleted,
-}: TaskComponentProps) {
+  setAnimationCompleted,
+  animationCompleted,
+}:
+TaskComponentProps) {
   const { state, dispatch } = useAppState();
-  const [isRunning, setIsRunning] = useState(false);
-  const [completedAnimation, setCompletedAnimation] = useState(false);
 
   useEffect(() => {
-    setCompletedAnimation(false);
+    setAnimationCompleted(false);
   }, [state.isSessionActive]);
 
-  useEffect(() => {
-    if (
-      state.currentTask &&
-      state.currentTask.id === task.id &&
-      state.isSessionActive
-    ) {
-      setIsRunning(true);
-    } else {
-      setIsRunning(false);
-    }
-  }, [state.currentTask, state.isSessionActive]);
 
-  const startWorkSession = () => {
-    dispatch({ type: "SET_CURRENT_TASK", task });
-    dispatch({ type: "START_SESSION" });
-  };
-
-  const stopWorkSession = () => {
-    // update time spent on task
-
-    dispatch({ type: "END_SESSION" });
-  };
-
-  const completeTask = async () => {
-    try {
-      const taskk: Task = { ...task, completed: !task.completed };
-      dispatch({ type: "COMPLETE_TASK", task: taskk });
-      const data = await fetch(`/api/tasks/${task.id}`, {
-        method: "PUT",
-        body: JSON.stringify(taskk),
-      });
-      const res = await data.json();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  // if(state.isSessionActive && completedAnimation && state.currentTask?.id !== task.id){
-  //   console.log("returning empty");
-  //   return <></>
-  // }
-
-  return state.isSessionActive &&
-    completedAnimation &&
-    state.currentTask?.id !== task.id ? null : (
+  return (state.isSessionActive &&
+    animationCompleted &&
+    state.currentTask?.id !== task.id) ? null : (
     <Box
       direction="row"
       align="center"
@@ -80,13 +40,6 @@ export default function TaskComponent({
       gap="small"
       onClick={() => {
         dispatch({ type: "SET_CURRENT_TASK", task });
-        // if (!state.isSessionActive && state.currentTask?.id !== task.id) {
-        // }
-        // if(isRunning){
-        //   stopWorkSession();
-        // } else {
-        //   startWorkSession();
-        // }
       }}
       style={
         state.isSessionActive &&
@@ -118,9 +71,15 @@ export default function TaskComponent({
             }
       }
       onAnimationEnd={() => {
-        // console.log(index, state.tasks.length - 1);
-        if (index >= state.tasks.length - 1 && state.isSessionActive) {
-          toggleAnimationCompleted(true);
+        console.log(index, state.tasks.length - 1);
+        if ((index + 2 >= state.tasks.length) && state.isSessionActive) {
+          // toggleAnimationCompleted(true);
+          setAnimationCompleted(true);
+          console.log(
+            state.isSessionActive,
+            animationCompleted,
+            state.currentTask?.id !== task.id
+          );
         }
       }}
     >
@@ -167,23 +126,23 @@ export default function TaskComponent({
           />
         </Box>
         <Box direction="row" gap="small">
-        {
-          // task.timeSpent ? <Text size="small" alignSelf="end">{Math.floor(task.timeSpent / 60)} minutes</Text> : null
-          [
-            1,2,3,4
-          ].map((item, i) => (
-            <Box key={i} style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor: (i+1) < (100/((task.timeSpent || 100) * 60)) ? "red" : "#ccc",
-            }}></Box>
-            // <Clock style={{
-            //   width: "15px",
-            //   height: "15px",}} key={i} color={i < (100/((task.timeSpent || 1001) * 60)) ? "red" : "#ccc"} />
-          ))
-        }
-      </Box>
+          {
+            [1, 2, 3, 4].map((item, i) => (
+              <Box
+                key={i}
+                style={{
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor:
+                    i + 1 < 100 / ((task.timeSpent || 100) * 60)
+                      ? "red"
+                      : "#ccc",
+                }}
+              ></Box>
+            ))
+          }
+        </Box>
       </Box>
     </Box>
   );
