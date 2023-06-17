@@ -8,22 +8,24 @@ import {
   Stack,
   ResponsiveContext,
   Anchor,
+  Meter,
 } from "grommet";
 import { useAppState } from "../context/appStateContext";
 import styles from "@/styles/Home.module.css";
+import { PauseFill, PlayFill, PowerReset } from "grommet-icons";
+import { quotes } from "@/utils/quotes";
+import showNotification from "@/utils/notification";
 
 const MyTimer = () => {
-  const [minutes, setMinutes] = useState(25);
-  const [seconds, setSeconds] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(5);
   //   const [isRunning, setIsRunning] = useState(false);
   const [breakTime, setBreakTime] = useState(false);
   const [cycles, setCycles] = useState(0);
   const { state, dispatch } = useAppState();
 
-
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
-    console.log(state.isSessionActive);
     if (state.isSessionActive) {
       interval = setInterval(() => {
         if (seconds > 0) {
@@ -33,8 +35,26 @@ const MyTimer = () => {
           if (minutes === 0) {
             // setIsRunning(false);
             dispatch({ type: "END_SESSION" });
+            // Show notification
+            breakTime
+              ? showNotification("Break is over, let's get back to work!")
+              : showNotification(
+                  "Time for a break! Take a walk, drink some water, and come back refreshed!"
+                );
+            dispatch({
+              type: "SET_SESSION_TYPE",
+              sessionType: breakTime
+                ? "work"
+                : cycles > 3
+                ? "longBreak"
+                : "shortBreak",
+            });
             setBreakTime(!breakTime);
-            if (!breakTime) setCycles(cycles + 1);
+            if (!breakTime) {
+              setCycles(cycles + 1);
+              // todo:  send api request to update task
+              updateTask();
+            }
             setMinutes(breakTime ? 25 : (cycles + 1) % 4 === 0 ? 15 : 5);
           } else {
             setMinutes(minutes - 1);
@@ -48,10 +68,38 @@ const MyTimer = () => {
     return () => (interval ? clearInterval(interval) : undefined);
   }, [seconds, dispatch, state.isSessionActive]);
 
+  const updateTask = async () => {
+    try {
+      console.log({
+        ...state.currentTask,
+        tomatoes: state.currentTask!.tomatoes - 1,
+        timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
+      });
+      const dat = await fetch(`/api/tasks/${state.currentTask?.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...state.currentTask,
+          tomatoes: state.currentTask!.tomatoes - 1,
+          timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
+        }),
+      });
+      const res = await dat.json();
+      dispatch({
+        type: "UPDATE_TASK",
+        task: res,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const startTimer = () => {
     // select the task
-    dispatch({ type: "SET_CURRENT_TASK", task: state.tasks[0] });
-
+    // dispatch({ type: "SET_CURRENT_TASK", task: state.tasks[0] });
 
     // start the timer
     // setIsRunning(true);
@@ -72,7 +120,7 @@ const MyTimer = () => {
   const resetTimer = () => {
     // setIsRunning(false);
     dispatch({ type: "END_SESSION" });
-    dispatch({ type: "SET_SESSION_TYPE", sessionType: "work" })
+    dispatch({ type: "SET_SESSION_TYPE", sessionType: "work" });
     setMinutes(25);
     setSeconds(0);
     setBreakTime(false);
@@ -82,7 +130,7 @@ const MyTimer = () => {
   const triggerShortBreak = () => {
     // setIsRunning(false);
     dispatch({ type: "END_SESSION" });
-    dispatch({ type: "SET_SESSION_TYPE", sessionType: "shortBreak" })
+    dispatch({ type: "SET_SESSION_TYPE", sessionType: "shortBreak" });
     setMinutes(5);
     setSeconds(0);
     setBreakTime(true);
@@ -91,7 +139,7 @@ const MyTimer = () => {
   const triggerLongBreak = () => {
     // setIsRunning(false);
     dispatch({ type: "END_SESSION" });
-    dispatch({ type: "SET_SESSION_TYPE", sessionType: "longBreak" })
+    dispatch({ type: "SET_SESSION_TYPE", sessionType: "longBreak" });
     setMinutes(15);
     setSeconds(0);
     setBreakTime(true);
@@ -102,36 +150,50 @@ const MyTimer = () => {
       {(size) => (
         <Box
           style={{
-            height: size === "small" ? "100vh" : "100vh",
+            // height: size === "small" ? "100vh" : "100vh",
             fontSize: "10rem",
             // width: "100%",
             // backgroundColor: "red",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+            // display: "flex",
+            // flexDirection: "column",
+            // justifyContent: "center",
+            // alignItems: "center",
           }}
+          align="center"
+          justify="start"
+          direction="column"
+          gap="medium"
         >
-          <Box direction="row" gap="medium">
+          <Box
+            direction="row"
+            gap="medium"
+            margin={{
+              top: "medium",
+              bottom: size === "small" ? "xlarge" : "medium",
+            }}
+          >
             <Anchor
               onClick={() => resetTimer()}
               size="small"
               label="Pomodoro"
+              color={state.sessionType === "work" ? "#ea580c" : "dark-1"}
             />
             <Anchor
               onClick={() => triggerShortBreak()}
               size="small"
               label="Short Break"
+              color={state.sessionType === "shortBreak" ? "#ea580c" : "dark-1"}
             />
             <Anchor
               onClick={() => triggerLongBreak()}
               size="small"
               label="Long Break"
+              color={state.sessionType === "longBreak" ? "#ea580c" : "dark-1"}
             />
           </Box>
 
           <Stack anchor="center">
-            <Box
+            {/* <Box
               style={
                 state.isSessionActive
                   ? {
@@ -151,11 +213,12 @@ const MyTimer = () => {
               }
 
               // className={styles.rotatingPulsatingSquare}
-            />
+            /> */}
             <Box
               style={{
-                height: "60vh",
-                width: "60vh",
+                height: size === "small" ? "80vw" : "60vh",
+                width: size === "small" ? "80vw" : "60vh",
+                maxWidth: "100vw",
                 borderRadius: "30%",
                 backgroundColor: "gray",
                 boxShadow: "inset 0 0 0 200px rgba(255, 255, 255, 0.5)",
@@ -167,8 +230,11 @@ const MyTimer = () => {
             />
             <Box
               style={{
-                height: "50vh",
-                width: "50vh",
+                // height: "50vh",
+                // width: "50vh",
+                height: size === "small" ? "60vw" : "50vh",
+                width: size === "small" ? "60vw" : "50vh",
+                maxWidth: "100vw",
                 borderRadius: "30%",
                 backgroundColor: "white",
                 boxShadow: "inset 0 0 0 200px rgba(255, 255, 255, 0.5)",
@@ -178,24 +244,62 @@ const MyTimer = () => {
               }}
               // className={styles.rotatingPulsatingSquare}
             ></Box>
-            <Heading
-              level={"1"}
+            <Stack anchor="center">
+              <Heading
+                level={"1"}
+                style={{
+                  // fontSize: "5rem",
+                  // marginBottom: "10rem",
+                  color: state.currentTask?.color,
+                }}
+              >{`${minutes.toString().padStart(2, "0")}:${seconds
+                .toString()
+                .padStart(2, "0")}`}</Heading>
+              <Box
+                style={{
+                  transform: "scale(2.5)",
+                  maxHeight: "5rem",
+                  zIndex: -1,
+                }}
+              >
+                <Meter
+                  type="circle"
+                  background="light-2"
+                  values={[
+                    {
+                      value: (minutes * 60 + seconds) / 60,
+                      color: state.currentTask?.color,
+                    },
+                  ]}
+                  size="xxlarge"
+                  thickness="xlarge"
+                  round
+                />
+              </Box>
+            </Stack>
+
+            <Box
+              direction="row"
+              gap="medium"
+              align="center"
+              justify="center"
               style={{
-                fontSize: "5rem",
-                marginBottom: "10rem",
+                position: "absolute",
+                bottom: size === "small" ? "-120px" : "-150px",
               }}
-            >{`${minutes.toString().padStart(2, "0")}:${seconds
-              .toString()
-              .padStart(2, "0")}`}</Heading>
-            {/* {state.isSessionActive ? (
-          <Button onClick={pauseTimer} label="Pause"></Button>
-        ) : (
-          <Button onClick={startTimer} label="Start"></Button>
-        )} */}
-            <Box direction="row" gap="medium">
-              <Button label="Reset" onClick={resetTimer} />
-              <Button label="Start" onClick={startTimer} />
-              <Button label="Pause" onClick={pauseTimer} />
+            >
+              <Button
+                icon={state.isSessionActive ? <PauseFill /> : <PlayFill />}
+                onClick={() => {
+                  state.isSessionActive ? pauseTimer() : startTimer();
+                }}
+              />
+              <Button
+                icon={<PowerReset />}
+                onClick={() => {
+                  resetTimer();
+                }}
+              />
             </Box>
           </Stack>
           {/* <Clock run={false} size='xxlarge' style={{

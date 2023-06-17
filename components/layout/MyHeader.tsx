@@ -1,46 +1,63 @@
-import { Box, Button, Header, Heading, Layer, Menu } from "grommet";
+import { Box, Button, Header, Heading, Layer, Menu, Text } from "grommet";
 import { FC, useState } from "react";
 import TaskForm from "../tasks/TaskForm";
 import { useAppState } from "../context/appStateContext";
+import Link from "next/link";
 
 function MyHeader() {
-    const [showTodoForm, setShowTodoForm] = useState(false);
-    const {state, dispatch} = useAppState();
+  const [showTodoForm, setShowTodoForm] = useState(false);
+  const { state, dispatch } = useAppState();
   return (
-    <>
-    <Header background="brand" style={state.isSessionActive ? {
-      animation: "headerFadeUp 1s ease-in-out 1",
-    } : {
-      animation: "headerFadeDown 1s ease-in-out 1",
-    }} >
-      <Button hoverIndicator >
-        <strong>Tomato</strong>
+    <Header background="brand">
+      <Link href={"/"}>
+
+      <Button hoverIndicator>
+        <Box pad="small">
+          <Heading level="3" margin="none" color={"#fff"}>
+            Lief Pomo
+          </Heading>
+        </Box>
       </Button>
-      <Button label="Add Todo" onClick={() => setShowTodoForm(true)} />
-        <Menu label="account" items={[{ label: "logout" }]} />
+      </Link>
+
+      {/* <Menu label="account" items={[{ label: "logout" }]} /> */}
+      <Box direction="row" gap="small" justify="center">
+        <Stats
+          label="Done"
+          value={state.tasks.filter((task) => task.completed).length.toString()}
+        />
+        <Stats
+          label="Tomatoes"
+          value={state.tasks.map((task) => task.tomatoes).reduce((a, b) => a + b, 0).toString()}
+        />
+        <Stats
+          label="Focus Time"
+          value={state.tasks.map((task) => (task.timeSpent!)).reduce((a, b) => a + b, 0).toString() + " mins"}
+        />
+      </Box>
     </Header>
-      {
-          (showTodoForm || state.editingTask?.title )
-           &&  (
-            <Layer
-              onEsc={() => setShowTodoForm(false)}
-              onClickOutside={() => setShowTodoForm(false)}
-              style={{
-               
-                overflow: "auto",
-              }}
-            >
-                <Box pad="medium" gap="small" width="medium">
-                    <Heading level={3} margin="none">
-                        Add Todo
-                    </Heading>
-                    <TaskForm  setShowTodoForm={setShowTodoForm}/>
-                </Box>
-            </Layer>
-          )
-        }
-    </>
   );
 }
+
+interface StatCardProps {
+  label: string;
+  value: string;
+}
+
+const Stats = ({ label, value }: StatCardProps) => {
+  const { state, dispatch } = useAppState();
+  return (
+    <Box
+      direction="column"
+      pad="small"
+      align="center"
+      gap="xsmall"
+      round="small"
+    >
+      <Text>{label}</Text>
+      <Text weight="bold">{value}</Text>
+    </Box>
+  );
+};
 
 export default MyHeader;

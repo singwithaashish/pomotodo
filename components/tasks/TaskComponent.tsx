@@ -2,7 +2,7 @@ import { Task } from "@/typings";
 import { Box, Button, Grid, Text, Menu, CheckBox } from "grommet";
 import React, { useEffect, useState } from "react";
 import { useAppState } from "../context/appStateContext";
-import { Checkbox, More } from "grommet-icons";
+import { Checkbox, Clock, More, Time } from "grommet-icons";
 
 interface TaskComponentProps {
   task: Task;
@@ -72,11 +72,26 @@ export default function TaskComponent({
   return state.isSessionActive &&
     completedAnimation &&
     state.currentTask?.id !== task.id ? null : (
-    <Grid
-      columns={["auto", "2/4", "1/4"]}
+    <Box
+      direction="row"
+      align="center"
+      justify="between"
+      pad="small"
       gap="small"
+      onClick={() => {
+        dispatch({ type: "SET_CURRENT_TASK", task });
+        // if (!state.isSessionActive && state.currentTask?.id !== task.id) {
+        // }
+        // if(isRunning){
+        //   stopWorkSession();
+        // } else {
+        //   startWorkSession();
+        // }
+      }}
       style={
-        state.isSessionActive && state.currentTask?.id !== task.id && state.sessionType === "work"
+        state.isSessionActive &&
+        state.currentTask?.id !== task.id &&
+        state.sessionType === "work"
           ? {
               opacity: 1,
               animation: `fadeOut 0.2s ${index * 0.2}s forwards`,
@@ -85,6 +100,8 @@ export default function TaskComponent({
               backgroundColor: "#fff",
               borderRadius: "5px",
               marginBottom: "10px",
+              borderLeft:
+                state.currentTask?.id === task.id ? "3px solid green" : "none",
             }
           : {
               opacity: 0,
@@ -94,6 +111,10 @@ export default function TaskComponent({
               backgroundColor: "#fff",
               borderRadius: "5px",
               marginBottom: "10px",
+              borderLeft:
+                state.currentTask?.id === task.id
+                  ? "3px solid " + task.color
+                  : "none",
             }
       }
       onAnimationEnd={() => {
@@ -103,8 +124,7 @@ export default function TaskComponent({
         }
       }}
     >
-      <Box direction="column" alignContent="center">
-        🍅 {task.tomatoes}
+      <Box direction="row" align="center" gap="small">
         <CheckBox
           checked={task.completed}
           onChange={async () => {
@@ -122,50 +142,49 @@ export default function TaskComponent({
             dispatch({ type: "COMPLETE_TASK", task: res });
           }}
         />
-        <Menu
-          alignSelf="center"
-          icon={<More />}
-          // dropProps={{closeIndicator: false}}
-          // label="Actions"
-          items={[
-            {
-              label: "Edit",
-              onClick: () => {
-                dispatch({ type: "SET_EDITING_TASK", task });
-              },
-            },
-            { label: "Delete", onClick: () => onDelete(task) },
-          ]}
-        />
-      </Box>
-      <Box direction="column">
-        <Text size="large">{task.title}</Text>
-        <Text>{task.description}</Text>
-        <Box
-          // background="light-3"
-          border={{ color: "black", size: "small" }}
-          // round="small"
-          // overflow="hidden"
-          height={"10px"}
-          style={{ width: "100%" }}
-        >
-          <Box
-            // background="brand"
-            height={"10px"}
-            style={{ width: "100%", backgroundColor: task.color }}
-          />
+        <Box direction="column">
+          <Text weight="bold">{task.title}</Text>
+          <Text>{task.description}</Text>
         </Box>
       </Box>
-      <Button
-        label={isRunning ? "Stop" : "Start"}
-        onClick={() => {
-          if (isRunning) {
-            stopWorkSession();
-          } else {
-            startWorkSession();
-          }
-        }}
-      />
-    </Grid>
+      <Box direction="column" align="end">
+        <Box direction="row" gap="small">
+          <Text alignSelf="center">🍅 {task.tomatoes}</Text>
+          <Menu
+            alignSelf="center"
+            icon={<More />}
+            // dropProps={{closeIndicator: false}}
+            // label="Actions"
+            items={[
+              {
+                label: "Edit",
+                onClick: () => {
+                  dispatch({ type: "SET_EDITING_TASK", task });
+                },
+              },
+              { label: "Delete", onClick: () => onDelete(task) },
+            ]}
+          />
+        </Box>
+        <Box direction="row" gap="small">
+        {
+          // task.timeSpent ? <Text size="small" alignSelf="end">{Math.floor(task.timeSpent / 60)} minutes</Text> : null
+          [
+            1,2,3,4
+          ].map((item, i) => (
+            <Box key={i} style={{
+              width: "10px",
+              height: "10px",
+              borderRadius: "50%",
+              backgroundColor: (i+1) < (100/((task.timeSpent || 100) * 60)) ? "red" : "#ccc",
+            }}></Box>
+            // <Clock style={{
+            //   width: "15px",
+            //   height: "15px",}} key={i} color={i < (100/((task.timeSpent || 1001) * 60)) ? "red" : "#ccc"} />
+          ))
+        }
+      </Box>
+      </Box>
+    </Box>
   );
 }

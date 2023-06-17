@@ -16,61 +16,21 @@ import {
 import MyHeader from "@/components/layout/MyHeader";
 import Timer from "@/components/pomodoro/Timer";
 import MyTimer from "@/components/pomodoro/Timer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import the css home.module.css
 import "@/styles/Home.module.css";
 import { useAppState } from "@/components/context/appStateContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const theme = {
-  global: {
-    colors: {
-      brand: "#Faaaaa",
-    },
-    font: {
-      family: "Roboto",
-      size: "18px",
-      height: "20px",
-    },
-  },
-  button: {
-    border: {
-      radius: "5px",
-    },
-    extend: {
-      ":hover": {
-        backgroundColor: "#ea580c",
-      },
-    },
-    // color: "white",
-    // background color:
-    primary: {
-      color: "#ea580c",
-      background: "#ea580c",
-    },
-
-  },
-  clock: {
-    analog: {
-      minute: {
-        size: "1000px",
-      },
-      // hour: {
-      //   size: '80px',
-      // },
-      // second: {
-      //   size: '60px',
-      // },
-      // size: {
-      //   medium: '200px',
-      // },
-    },
-  },
-};
-
 export default function Home() {
-  const {state, dispatch} = useAppState();
+  const { state, dispatch } = useAppState();
+
+  useEffect(() => {
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   return (
     <>
@@ -81,30 +41,37 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Grommet theme={theme}>
-        {/* {
+      {/* <Grommet theme={theme}> */}
+      {/* <MyHeader />  */}
+      {/* {
           !state.isSessionActive && 
-        <MyHeader /> 
         } */}
-        <Main style={state.isSessionActive ? {
-          backgroundColor: "#e5e7eb",
-          animation: 'fadeToBlack 1s forwards',
-        }:
-          {
-            backgroundColor: "#e5e7eb",
-          animation: 'fadeFromBlack 1s forwards',
-        }}
-        >
-          <ResponsiveContext.Consumer>
-          {(size) =>
-          <Grid columns={size === 'small' ? ['full'] : ['2/4', '2/4']} gap="small">
-            <MyTimer />
-            <TaskPage />
-          </Grid>
-          }
-          </ResponsiveContext.Consumer>
-        </Main>
-      </Grommet>
+      <Main
+        style={
+          state.isSessionActive
+            ? {
+                backgroundColor: "#e5e7eb",
+                animation: "fadeToBlack 1s forwards",
+              }
+            : {
+                backgroundColor: "#e5e7eb",
+                animation: "fadeFromBlack 1s forwards",
+              }
+        }
+      >
+        <ResponsiveContext.Consumer>
+          {(size) => (
+            <Grid
+              columns={size === "small" ? ["full"] : ["2/4", "2/4"]}
+              gap="small"
+            >
+              <MyTimer />
+              <TaskPage />
+            </Grid>
+          )}
+        </ResponsiveContext.Consumer>
+      </Main>
+      {/* </Grommet> */}
     </>
   );
 }

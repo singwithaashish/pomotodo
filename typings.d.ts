@@ -5,10 +5,18 @@ export type Task = {
   completed?: boolean;
   description: string;
   dueDate: string;
+  tomatoes: number;
   color: string;
   tomatoes: number;
   timeSpent?: number;
+  createdAt?: string;
 };
+
+type Filter = {
+  sort: "all" | "created" | "updated" | "due";
+  show: "all" | "completed" | "overdue";
+  order: "asc" | "desc";
+}
 
 export type TaskFormProps = {
   task: Task | null;

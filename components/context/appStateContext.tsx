@@ -1,5 +1,8 @@
-import { Task } from "@/typings";
+import { Filter, Task } from "@/typings";
 import React, { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
+
+
+
 
 type State = {
   tasks: Task[];
@@ -8,6 +11,7 @@ type State = {
   currentSession: number;
   isSessionActive: boolean;
   sessionType: "work" | "shortBreak" | "longBreak";
+  appliedFilters?: Filter;
 };
 
 type Action =
@@ -21,6 +25,7 @@ type Action =
   | { type: "INCREMENT_CURRENT_SESSION" }
   | { type: "START_SESSION" }
   | { type: "END_SESSION" }
+  | { type: "SET_FILTERS"; filters: Filter }
   | {
       type: "SET_SESSION_TYPE";
       sessionType: "work" | "shortBreak" | "longBreak";
@@ -33,6 +38,11 @@ const initialState: State = {
   currentSession: 0,
   isSessionActive: false,
   sessionType: "work",
+  appliedFilters: {
+    sort: "all",  // "all" | "created" | "updated" | "due"
+    show: "all", // "completed" | "overdue" | "all"
+    order: "desc", // "asc" | "desc"
+  } as Filter,
 };
 
 function reducer(state: State, action: Action): State {
@@ -70,6 +80,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, isSessionActive: true };
     case "END_SESSION":
       return { ...state, isSessionActive: false };
+    case "SET_FILTERS":
+      return { ...state, appliedFilters: action.filters };
     case "SET_SESSION_TYPE":
       return { ...state, sessionType: action.sessionType };
     default:

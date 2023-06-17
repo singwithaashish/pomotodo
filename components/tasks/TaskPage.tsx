@@ -1,15 +1,18 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { Box, Button, Heading, Layer } from "grommet";
+import { Box, Button, DropButton, Heading, Layer, Select, Text } from "grommet";
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
-import { Task } from "@/typings";
+import { Filter as FLT, Task } from "@/typings";
 import { AppStateContext, useAppState } from "../context/appStateContext";
+import Link from "next/link";
+import { Filter, User } from "grommet-icons";
 
 const TaskPage: FC = () => {
   //   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
-  const [showTodoForm, setShowTodoForm] = useState(false);
-    const {state, dispatch} = useAppState();
+  const [filterMenu, setFilterMenu] = useState(false);
+
+  const { state, dispatch } = useAppState();
 
   useEffect(() => {
     // Fetch tasks here and setTasks
@@ -21,41 +24,6 @@ const TaskPage: FC = () => {
     };
     fetchTasks();
   }, []);
-
-  // inside TaskPage component
-  const handleCreateOrUpdate = async (task: Task) => {
-    // if (task.id) {
-    //   // Update the task
-    //   const response = await fetch(`/api/tasks/${task.id}`, {
-    //     method: "PUT",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(task),
-    //   });
-    //   const data = await response.json();
-
-    //   //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
-    //   dispatch({ type: "UPDATE_TASK", task: data });
-    // } else {
-    //   // Create a new task
-    //   //   console.log(user);
-    //   const response = await fetch("/api/tasks", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(task),
-    //   });
-    //   console.log(response);
-    //   const data = await response.json();
-
-    //   //   setTasks([...tasks, data]);
-    //   dispatch({ type: "ADD_TASK", task: data });
-    // }
-
-    // setCurrentTask(null);
-  };
 
   const handleEdit = (task: Task) => {
     setCurrentTask(task);
@@ -71,43 +39,96 @@ const TaskPage: FC = () => {
 
   return (
     <Box>
-      <Box direction="row" justify="between" align="center">
-      <Heading level="3">Tasks</Heading>
-      <Button label="Add Task" onClick={() => setShowTodoForm(true)} />
-      </Box>
-      {
-          (showTodoForm || state.editingTask?.title )
-           &&  (
+      <Box
+        direction="row"
+        justify="between"
+        align="center"
+        style={{
+          animation: state.isSessionActive
+            ? "fadeOut 0.2s forwards"
+            : "fadeIn 0.2s forwards",
+        }}
+      >
+        <Box direction="row" align="center" gap="small">
+          <Heading level="3">Tasks</Heading>
+          <Button icon={<Filter />} onClick={() => setFilterMenu(true)} />
+          {filterMenu && (
             <Layer
-              onEsc={() => setShowTodoForm(false)}
-              onClickOutside={() => setShowTodoForm(false)}
+              onEsc={() => setFilterMenu(false)}
+              onClickOutside={() => setFilterMenu(false)}
               style={{
-               
                 overflow: "auto",
               }}
             >
-                <Box pad="medium" gap="small" width="medium">
-                    <Heading level={3} margin="none">
-                        Add Todo
-                    </Heading>
-                    <TaskForm  setShowTodoForm={setShowTodoForm}/>
-                </Box>
+              <Box pad="medium" gap="small" width="medium">
+                <Heading level={3} margin="none">
+                  Apply Filter
+                </Heading>
+                <Text>Filter by</Text>
+                <Select
+                  options={["all", "overdue", "completed"]}
+                  value={state.appliedFilters?.show}
+                  onChange={({ option }) => {
+                    dispatch({
+                      type: "SET_FILTERS",
+                      filters: {
+                        ...state.appliedFilters,
+                        show: option,
+                      } as FLT,
+                    });
+                  }}
+                />
+                <Text>Sort by</Text>
+                <Select
+                  options={["all","created", "updated", "due"]}
+                  value={state.appliedFilters?.sort}
+                  onChange={({ option }) => {
+                    dispatch({
+                      type: "SET_FILTERS",
+                      filters: {
+                        ...state.appliedFilters,
+                        sort: option,
+                      } as FLT,
+                    });
+                  }}
+                />
+                <Text>Order</Text>
+                <Select
+                  options={["asc", "desc"]}
+                  value={state.appliedFilters?.order}
+                  onChange={({ option }) => {
+                    dispatch({
+                      type: "SET_FILTERS",
+                      filters: {
+                        ...state.appliedFilters,
+                        order: option,
+                      } as FLT,
+                    });
+                  }}
+                />
+                <Button label="Apply" onClick={() => setFilterMenu(false)} />
+              </Box>
             </Layer>
-          )
-        }
-          
-      {/* <TaskForm
-        task={
-          currentTask || {
-            title: "",
-            description: "",
-            dueDate: "",
-            tomatoes: 0,
-            color: ""
+          )}
+        </Box>
+        <Link href="/dashboard">
+          <Button primary label="Dashboard" />
+        </Link>
+        <DropButton
+          dropAlign={{ top: "bottom" }}
+          icon={<User />}
+          dropContent={
+            <Box
+              pad="large"
+              onClick={() => {
+                window.location.href = "/api/auth/logout";
+              }}
+            >
+              <Text>Logout</Text>
+            </Box>
           }
-        }
-        onSubmit={handleCreateOrUpdate}
-      /> */}
+        />
+      </Box>
       <TaskList
         tasks={state.tasks}
         onDelete={handleDelete}
