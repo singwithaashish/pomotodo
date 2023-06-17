@@ -66,7 +66,7 @@ TaskComponentProps) {
               marginBottom: "10px",
               borderLeft:
                 state.currentTask?.id === task.id
-                  ? "3px solid " + task.color
+                  ? "3px solid #ea580c"
                   : "none",
             }
       }

@@ -17,12 +17,15 @@ import { quotes } from "@/utils/quotes";
 import showNotification from "@/utils/notification";
 
 const MyTimer = () => {
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(5);
+  const [minutes, setMinutes] = useState(25);
+  const [seconds, setSeconds] = useState(0);
   //   const [isRunning, setIsRunning] = useState(false);
   const [breakTime, setBreakTime] = useState(false);
   const [cycles, setCycles] = useState(0);
+  
   const { state, dispatch } = useAppState();
+
+  const [totalSeconds, setTotalSeconds] = useState(0);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
@@ -70,11 +73,6 @@ const MyTimer = () => {
 
   const updateTask = async () => {
     try {
-      console.log({
-        ...state.currentTask,
-        tomatoes: state.currentTask!.tomatoes - 1,
-        timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
-      });
       const dat = await fetch(`/api/tasks/${state.currentTask?.id}`, {
         method: "PUT",
         headers: {
@@ -98,11 +96,8 @@ const MyTimer = () => {
   };
 
   const startTimer = () => {
-    // select the task
-    // dispatch({ type: "SET_CURRENT_TASK", task: state.tasks[0] });
-
-    // start the timer
-    // setIsRunning(true);
+    setTotalSeconds(state.sessionType === "work" ? 1500 : state.sessionType === "shortBreak" ? 300 : 900);
+    console.log(totalSeconds);
     state.isSessionActive
       ? null
       : dispatch({ type: "INCREMENT_CURRENT_SESSION" });
@@ -123,6 +118,7 @@ const MyTimer = () => {
     dispatch({ type: "SET_SESSION_TYPE", sessionType: "work" });
     setMinutes(25);
     setSeconds(0);
+    setTotalSeconds(1500);
     setBreakTime(false);
     setCycles(0);
   };
@@ -133,6 +129,7 @@ const MyTimer = () => {
     dispatch({ type: "SET_SESSION_TYPE", sessionType: "shortBreak" });
     setMinutes(5);
     setSeconds(0);
+    setTotalSeconds(300);
     setBreakTime(true);
   };
 
@@ -142,6 +139,7 @@ const MyTimer = () => {
     dispatch({ type: "SET_SESSION_TYPE", sessionType: "longBreak" });
     setMinutes(15);
     setSeconds(0);
+    setTotalSeconds(900);
     setBreakTime(true);
   };
 
@@ -193,27 +191,7 @@ const MyTimer = () => {
           </Box>
 
           <Stack anchor="center">
-            {/* <Box
-              style={
-                state.isSessionActive
-                  ? {
-                      animation: "rotatingPulse 5.1s ease-in-out infinite",
-                      height: "70vh",
-                      width: "70vh",
-                      borderRadius: "30%",
-                      backgroundColor: state.currentTask?.color,
-                    }
-                  : {
-                      // animation: "headerFadeDown 1s ease-in-out 1",
-                      height: "70vh",
-                      width: "70vh",
-                      borderRadius: "30%",
-                      backgroundColor: state.currentTask?.color,
-                    }
-              }
-
-              // className={styles.rotatingPulsatingSquare}
-            /> */}
+            
             <Box
               style={{
                 height: size === "small" ? "80vw" : "60vh",
@@ -250,7 +228,7 @@ const MyTimer = () => {
                 style={{
                   // fontSize: "5rem",
                   // marginBottom: "10rem",
-                  color: state.currentTask?.color,
+                  color: state.sessionType === "work" ? "#ea580c" : state.sessionType === "shortBreak" ? "#84cc16" : "#4d7c0f",
                 }}
               >{`${minutes.toString().padStart(2, "0")}:${seconds
                 .toString()
@@ -267,8 +245,9 @@ const MyTimer = () => {
                   background="light-2"
                   values={[
                     {
-                      value: (minutes * 60 + seconds) / 60,
-                      color: state.currentTask?.color,
+                      value: 100 -
+                      ((minutes * 60 + seconds) / totalSeconds) * 100,
+                      color: state.sessionType === "work" ? "#ea580c" : state.sessionType === "shortBreak" ? "#84cc16" : "#4d7c0f",
                     },
                   ]}
                   size="xxlarge"
