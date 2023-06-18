@@ -121,7 +121,13 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           </Layer>
         )}
       </Box>
-      
+      {
+        state.isSessionActive && state.currentTask && animationCompleted && (
+          <Text size="small" margin="small" textAlign="center" color="dark-3">
+        {quotes[Math.floor(Math.random() * quotes.length)]}
+      </Text>
+        ) 
+    }
     </Box>
   );
 };
