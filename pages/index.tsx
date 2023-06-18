@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 // import the css home.module.css
 import "@/styles/Home.module.css";
 import { useAppState } from "@/components/context/appStateContext";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -74,7 +75,7 @@ export default function Home() {
       {/* </Grommet> */}
     </>
   );
-}
+};
 
 
 

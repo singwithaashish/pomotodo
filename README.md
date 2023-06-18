@@ -1,38 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+**PomoTodo** is a simple todo list app that uses the Pomodoro Technique to help you focus on your tasks.
+
+## Todo
+- [x] Task Management with CRUD and sorting
+- [x] Pomodoro Timer with 25 minutes work and 5 minutes break (15 minutes break every 4 pomodoros)
+- [x] User Authentication with Auth0
+- [x] UI/UX similar to the shared dribbble design but unique in its own way
+- [x] Analytics Dashboard with charts and graphs
+- [ ] Custom Task Categories
+- [ ] PWAs
+- [x] Notifications
+- [ ] Hire a pigeon to send the flash drive with the source code to lief
+
+
+## Screenshots
+
+
+## Tech Stack
+- Next.js
+- TypeScript
+- GraphQL
+- Grommet
+- Auth0
+- Apollo
+- Prisma
+- PostgreSQL
+
 
 ## Getting Started
+1. Clone the repo
+2. Install dependencies
+```npm install```
+3. Run the development server
+```npm run dev```
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

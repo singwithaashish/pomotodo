@@ -180,4 +180,4 @@ const Dashboard = () => {
   );
 };
 
-export default withPageAuthRequired(Dashboard);
+export default Dashboard;

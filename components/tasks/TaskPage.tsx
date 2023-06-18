@@ -1,11 +1,23 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { Box, Button, DropButton, Heading, Layer, Select, Text } from "grommet";
+import {
+  Avatar,
+  Box,
+  Button,
+  DropButton,
+  Heading,
+  Layer,
+  Select,
+  Text,
+} from "grommet";
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
 import { Filter as FLT, Task } from "@/typings";
-import { AppStateContext, useAppState } from "../context/appStateContext";
+import { useAppState } from "../context/appStateContext";
 import Link from "next/link";
 import { Filter, User } from "grommet-icons";
+import { gql, useQuery } from "@apollo/client";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { allTasks } from "../data/gqlFetch";
 
 const TaskPage: FC = () => {
   //   const [tasks, setTasks] = useState<Task[]>([]);
@@ -13,17 +25,30 @@ const TaskPage: FC = () => {
   const [filterMenu, setFilterMenu] = useState(false);
 
   const { state, dispatch } = useAppState();
+  const { data, loading, error } = useQuery(allTasks);
+  const { user } = useUser();
 
   useEffect(() => {
-    // Fetch tasks here and setTasks
-    const fetchTasks = async () => {
-      const response = await fetch("/api/tasks");
-      const data = await response.json();
-      //   setTasks(data);
-      dispatch({ type: "SET_TASKS", tasks: data });
-    };
-    fetchTasks();
-  }, []);
+    if (data) {
+      const tasks: Task[] = data.tasks.map((task: any) => {
+        return {
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate,
+          tomatoes: task.tomatoes,
+          priority: task.priority,
+          createdAt: task.createdAt,
+          updatedAt: task.updatedAt,
+          completed: task.completed,
+          timeSpent: task.timeSpent,
+        };
+      });
+
+      dispatch({ type: "SET_TASKS", tasks: tasks });
+      console.log(state.tasks);
+    }
+  }, [data]);
 
   const handleEdit = (task: Task) => {
     setCurrentTask(task);
@@ -80,7 +105,7 @@ const TaskPage: FC = () => {
                 />
                 <Text>Sort by</Text>
                 <Select
-                  options={["all","created", "updated", "due", "priority"]}
+                  options={["all", "created", "updated", "due", "priority"]}
                   value={state.appliedFilters?.sort}
                   onChange={({ option }) => {
                     dispatch({
@@ -106,7 +131,7 @@ const TaskPage: FC = () => {
                     });
                   }}
                 />
-                <Button label="Apply" onClick={() => setFilterMenu(false)} />
+                <Button label="close" onClick={() => setFilterMenu(false)} />
               </Box>
             </Layer>
           )}
@@ -116,16 +141,11 @@ const TaskPage: FC = () => {
         </Link>
         <DropButton
           dropAlign={{ top: "bottom" }}
-          icon={<User />}
+          icon={<Avatar src={user?.picture ? user.picture : ""} />}
           dropContent={
-            <Box
-              pad="large"
-              onClick={() => {
-                window.location.href = "/api/auth/logout";
-              }}
-            >
+            <Link href="/api/auth/logout">
               <Text>Logout</Text>
-            </Box>
+            </Link>
           }
         />
       </Box>

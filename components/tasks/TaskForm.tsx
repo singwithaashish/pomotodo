@@ -1,9 +1,22 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Button, Form, FormField, TextInput, Box, DateInput, Text, Select } from "grommet";
+import {
+  Button,
+  Form,
+  FormField,
+  TextInput,
+  Box,
+  DateInput,
+  Text,
+  Select,
+} from "grommet";
 import { Task } from "@/typings";
 import { useAppState } from "../context/appStateContext";
 import { Add, Subtract } from "grommet-icons";
 import { parse } from "path";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { CREATE_TASK } from "../data/gqlFetch";
+
+
 
 interface TaskFormProps {
   setShowTodoForm: (show: boolean) => void;
@@ -21,6 +34,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
       priority: "low",
     }
   );
+  const [createTask, { data, loading, error }] = useMutation(CREATE_TASK);
 
   useEffect(() => {
     setTask(
@@ -34,6 +48,15 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     );
   }, [initialTask]);
 
+  useEffect(() => {
+    console.log(data, loading, error)
+    if (data) {
+      console.log(data);
+      dispatch({ type: "ADD_TASK", task: data });
+    }
+  }
+  , [data, loading, error])
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTask({
       ...task,
@@ -43,48 +66,62 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // onSubmit(task);
-    if (task.id) {
-      // Update the task
-      const response = await fetch(`/api/tasks/${task.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
-      const data = await response.json();
+    try {
+      // onSubmit(task);
+      if (task.id) {
+        // Update the task
+        const response = await fetch(`/api/tasks/${task.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        });
+        const data = await response.json();
 
-      //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
-      dispatch({ type: "UPDATE_TASK", task: data });
-    } else {
-      // Create a new task
-      //   console.log(user);
-      const response = await fetch("/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
+        dispatch({ type: "UPDATE_TASK", task: data });
+      } else {
+        // Create a new task
+        // const response = await fetch("/api/tasks", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(task),
+        // });
+        // console.log(response);
+        // const data = await response.json();
+        // console.log(task);
+        const result = await createTask({
+          variables: {
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            priority: task.priority,
+            tomatoes: task.tomatoes,
+          },
+        });
+        console.log(result)
+            
+        
+        // dispatch({ type: "ADD_TASK", task: data });
+      }
+      // when there is no editing task, the popup closes
+      dispatch({
+        type: "SET_EDITING_TASK",
+        task: {
+          title: "",
+          description: "",
+          dueDate: "",
+          tomatoes: 0,
+          priority: "low",
         },
-        body: JSON.stringify(task),
       });
-      console.log(response);
-      const data = await response.json();
-
-      //   setTasks([...tasks, data]);
-      dispatch({ type: "ADD_TASK", task: data });
+      setShowTodoForm(false);
+    } catch (error) {
+      console.log(error);
     }
-    // when there is no editing task, the popup closes
-    dispatch({
-      type: "SET_EDITING_TASK",
-      task: {
-        title: "",
-        description: "",
-        dueDate: "",
-        tomatoes: 0,
-        priority: "low",
-      },
-    });
-    setShowTodoForm(false);
     //   setCurrentTask(null);
   };
 
@@ -108,11 +145,15 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         />
       </FormField>
 
-      <FormField name="description" htmlFor="text-input-id" validate={(value: string) => {
+      <FormField
+        name="description"
+        htmlFor="text-input-id"
+        validate={(value: string) => {
           if (!value || value.trim() === "") {
-            return "\"A short and sweet description please\" - this field";
+            return '"A short and sweet description please" - this field';
           }
-        }}>
+        }}
+      >
         <TextInput
           id="text-input-id"
           name="description"
@@ -122,11 +163,15 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         />
       </FormField>
 
-      <FormField name="dueDate" htmlFor="date-input-id" validate={(value: string) => {
+      <FormField
+        name="dueDate"
+        htmlFor="date-input-id"
+        validate={(value: string) => {
           if (!value || value.trim() === "") {
             return "Due Date when again?";
           }
-        }}>
+        }}
+      >
         <DateInput
           id="date-input-id"
           name="dueDate"
@@ -149,28 +194,26 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             id="priority-input-id"
             name="priority"
             placeholder="Priority"
-            options={["Low", "Medium", "High"]}
+            options={["low", "medium", "high"]}
             onChange={(event) => {
               setTask({
                 ...task,
                 priority: event.value,
               });
-            }
-          }
+            }}
           />
         </Box>
-
-
-
-        
       </FormField>
 
-      <FormField name="tomatoes" htmlFor="number-input-id" validate={(value: string) => {
+      <FormField
+        name="tomatoes"
+        htmlFor="number-input-id"
+        validate={(value: string) => {
           if (!value || parseInt(value) <= 0) {
             return "Tomatoes tomatoes tomatoes, more tomatoes please";
           }
-        }
-      }>
+        }}
+      >
         <Box direction="row" align="center" gap="small">
           <Button
             icon={<Subtract />}
@@ -183,7 +226,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             name="tomatoes"
             type="number"
             min="0"
-            value={task.tomatoes }
+            value={task.tomatoes}
             onChange={(event) => {
               setTask({
                 ...task,

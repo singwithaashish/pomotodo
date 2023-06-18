@@ -24,62 +24,89 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
   return (
     <Box
       pad="medium"
-      style={{
-        overflow: "auto",
-        // maxHeight: "calc(100vh - ",
-        height: "80vh",
-      }}
+      
+      
     >
-      {tasks.sort((a, b) => {
-        if (state.appliedFilters?.sort !== "all") {
-          if(state.appliedFilters?.sort === "created"){
-            return new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
-          }else if(state.appliedFilters?.sort === "due"){
-            return new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()
-          }else if(state.appliedFilters?.sort === "updated"){
-            return new Date(a.updatedAt!).getTime() - new Date(b.updatedAt!).getTime()
-          }else if(state.appliedFilters?.sort === "priority"){
-            return a.priority === "high" ? -1 : a.priority === "medium" ? 0 : 1
+      <Box style={{
+        overflow: "scroll",
+        // maxHeight: "calc(100vh - ",
+        height: "60vh",
+      }}>
+
+      
+      {tasks
+        .sort((a, b) => {
+          if (state.appliedFilters?.sort !== "all") {
+            if (state.appliedFilters?.sort === "created") {
+              console.log("filtering by created");
+              return (
+                new Date(a.createdAt!).getTime() -
+                new Date(b.createdAt!).getTime()
+              );
+            } else if (state.appliedFilters?.sort === "due") {
+              return (
+                new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()
+              );
+            } else if (state.appliedFilters?.sort === "updated") {
+              return (
+                new Date(a.updatedAt!).getTime() -
+                new Date(b.updatedAt!).getTime()
+              );
+            } else if (state.appliedFilters?.sort === "priority") {
+              return a.priority === "high"
+                ? -1
+                : a.priority === "medium"
+                ? 0
+                : 1;
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
           }
-          
-          else{
-            return 0
+        })
+        .filter((task) => {
+          if (state.appliedFilters?.show !== "all") {
+            if (state.appliedFilters?.show === "completed") {
+              return task.completed;
+            } else if (state.appliedFilters?.show === "overdue") {
+              return task.dueDate && new Date(task.dueDate) < new Date();
+            } else {
+              return (
+                !task.completed &&
+                (!task.dueDate || new Date(task.dueDate) >= new Date())
+              );
+            }
+          } else {
+            return true;
           }
-        }else{
-          return 0
-        }
-      }).filter((task) => {
-        if (state.appliedFilters?.show !== "all") {
-          if(state.appliedFilters?.show === "completed") {
-            return task.completed
-          }else if (state.appliedFilters?.show === "overdue") {
-            return task.dueDate && new Date(task.dueDate) < new Date()
-          }else{
-            return !task.completed && (!task.dueDate || new Date(task.dueDate) >= new Date())
+        })
+        .sort((a, b) => {
+          if (state.appliedFilters?.order === "asc") {
+            return (
+              new Date(a.createdAt!).getTime() -
+              new Date(b.createdAt!).getTime()
+            );
+          } else {
+            return (
+              new Date(b.createdAt!).getTime() -
+              new Date(a.createdAt!).getTime()
+            );
           }
-        }else {
-          return true
-        }
-        
-      }).sort((a, b) => {
-        if(state.appliedFilters?.order === "asc"){
-          return new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
-        }else{
-          return new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
-        }
-      })
-      .map((task, i) => (
-        <TaskComponent
-          key={task.id}
-          task={task}
-          onDelete={onDelete}
-          onEdit={onEdit}
-          index={i}
-          setAnimationCompleted={setAnimationCompleted}
-          animationCompleted={animationCompleted}
-          // toggleAnimationCompleted={toggleAnimationCompleted}
-        />
-      ))}
+        })
+        .map((task, i) => (
+          <TaskComponent
+            key={task.id}
+            task={task}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            index={i}
+            setAnimationCompleted={setAnimationCompleted}
+            animationCompleted={animationCompleted}
+            // toggleAnimationCompleted={toggleAnimationCompleted}
+          />
+        ))}
+        </Box>
       <Box
         direction="row"
         align="center"
@@ -94,8 +121,11 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           padding: "10px",
           backgroundColor: "#f5f5f5", // adjust color as needed
           borderRadius: "5px",
+          minHeight: "4rem",
           marginBottom: "10px",
-          animation: state.isSessionActive ? "fadeOut 0.2s forwards" : "fadeIn 0.2s forwards",
+          animation: state.isSessionActive
+            ? "fadeOut 0.2s forwards"
+            : "fadeIn 0.2s forwards",
         }}
       >
         <Button
@@ -112,7 +142,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
               overflow: "auto",
             }}
           >
-            <Box pad="medium" gap="small" width="medium">
+            <Box pad="medium" gap="small" width="medium" >
               <Heading level={3} margin="none">
                 Add Todo
               </Heading>
@@ -121,13 +151,11 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           </Layer>
         )}
       </Box>
-      {
-        state.isSessionActive && state.currentTask && animationCompleted && (
-          <Text size="small" margin="small" textAlign="center" color="dark-3">
-        {quotes[Math.floor(Math.random() * quotes.length)]}
-      </Text>
-        ) 
-    }
+      {state.isSessionActive && state.currentTask && animationCompleted && (
+        <Text size="small" margin="small" textAlign="center" color="dark-3">
+          {quotes[Math.floor(Math.random() * quotes.length)]}
+        </Text>
+      )}
     </Box>
   );
 };

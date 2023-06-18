@@ -1,5 +1,5 @@
 import { Task } from "@/typings";
-import { Box, Button, Grid, Text, Menu, CheckBox } from "grommet";
+import { Box, Button, Grid, Text, Menu, CheckBox, ResponsiveContext } from "grommet";
 import React, { useEffect, useState } from "react";
 import { useAppState } from "../context/appStateContext";
 import {
@@ -59,6 +59,7 @@ export default function TaskComponent({
               backgroundColor: "#fff",
               borderRadius: "5px",
               marginBottom: "10px",
+              minHeight: "4rem",
               borderLeft:
                 state.currentTask?.id === task.id ? "3px solid green" : "none",
             }
@@ -70,6 +71,7 @@ export default function TaskComponent({
               backgroundColor: "#fff",
               borderRadius: "5px",
               marginBottom: "10px",
+              minHeight: "4rem",
               borderLeft:
                 state.currentTask?.id === task.id
                   ? "3px solid #ea580c"
@@ -77,15 +79,10 @@ export default function TaskComponent({
             }
       }
       onAnimationEnd={() => {
-        console.log(index, state.tasks.length - 1);
         if (index + 2 >= state.tasks.length && state.isSessionActive) {
           // toggleAnimationCompleted(true);
           setAnimationCompleted(true);
-          console.log(
-            state.isSessionActive,
-            animationCompleted,
-            state.currentTask?.id !== task.id
-          );
+          
         }
       }}
     >
@@ -110,12 +107,21 @@ export default function TaskComponent({
           />
         </Box>
         <Box direction="column" justify="start">
-          <Box direction="row" gap="small" align="center">
-          <Text weight="bold">
+          {/* <Box direction="row" gap="small" align="center" justify="between"> */}
+          <ResponsiveContext.Consumer>
+            {size => 
+          <Text weight="normal" style={{
+            display: size === "small" ? "block" : "flex",
+            gap: "5px",
+          }} color={
+            task.completed ? "gray" : "black"
+          } >
             {task.title}
-          </Text>
             <PriorityIcon priority={task.priority} />
-          </Box>
+          </Text>
+            }
+          </ResponsiveContext.Consumer>
+          {/* </Box> */}
           <Text style={{
             fontSize: "12px",
             color: "#aaa"
@@ -167,17 +173,17 @@ interface PriorityIconProps {
 const PriorityIcon = ({ priority }: PriorityIconProps) => {
   return (
     <Box
-      direction="row"
-      gap="small"
-      justify="start"
-      align="center"
       background={"light-2"}
       style={{
         borderRadius: "5px",
         maxWidth: "fit-content",
+        maxHeight: "1.5rem",
       }}
     >
-      <Text size="small" weight={"lighter"}>
+      <Text size="small" weight={"lighter"} style={{
+        display: "flex",
+        alignItems: "center",
+      }}>
         <StatusWarning
           color={priority === "low" ? "orange" : "red"}
           size="small"

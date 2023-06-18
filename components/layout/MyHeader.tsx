@@ -14,7 +14,7 @@ function MyHeader() {
       <Button hoverIndicator>
         <Box pad="small">
           <Heading level="3" margin="none" color={"#fff"}>
-            Lief Pomo
+            Pomo Todo
           </Heading>
         </Box>
       </Button>
@@ -24,7 +24,7 @@ function MyHeader() {
       <Box direction="row" gap="small" justify="center">
         <Stats
           label="Done"
-          value={state.tasks.filter((task) => task.completed).length.toString()}
+          value={state.tasks.filter((task) => task?.completed).length.toString()}
         />
         <Stats
           label="Tomatoes"
