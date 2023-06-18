@@ -13,7 +13,7 @@ export type Task = {
 };
 
 type Filter = {
-  sort: "all" | "created" | "updated" | "due";
+  sort: "all" | "created" | "updated" | "due" | "priority";
   show: "all" | "completed" | "overdue";
   order: "asc" | "desc";
 }

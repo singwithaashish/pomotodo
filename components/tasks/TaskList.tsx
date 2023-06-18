@@ -30,7 +30,25 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
         height: "80vh",
       }}
     >
-      {tasks.filter((task) => {
+      {tasks.sort((a, b) => {
+        if (state.appliedFilters?.sort !== "all") {
+          if(state.appliedFilters?.sort === "created"){
+            return new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
+          }else if(state.appliedFilters?.sort === "due"){
+            return new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()
+          }else if(state.appliedFilters?.sort === "updated"){
+            return new Date(a.updatedAt!).getTime() - new Date(b.updatedAt!).getTime()
+          }else if(state.appliedFilters?.sort === "priority"){
+            return a.priority === "high" ? -1 : a.priority === "medium" ? 0 : 1
+          }
+          
+          else{
+            return 0
+          }
+        }else{
+          return 0
+        }
+      }).filter((task) => {
         if (state.appliedFilters?.show !== "all") {
           if(state.appliedFilters?.show === "completed") {
             return task.completed
@@ -43,20 +61,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           return true
         }
         
-      }).sort((a, b) => {
-        if (state.appliedFilters?.sort !== "all") {
-          if(state.appliedFilters?.sort === "created"){
-            return new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
-          }else if(state.appliedFilters?.sort === "due"){
-            return new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()
-          }else if(state.appliedFilters?.sort === "updated"){
-            return new Date(a.updatedAt!).getTime() - new Date(b.updatedAt!).getTime()
-          }else{
-            return 0
-          }
-        }else{
-          return 0
-        }
       }).sort((a, b) => {
         if(state.appliedFilters?.order === "asc"){
           return new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()

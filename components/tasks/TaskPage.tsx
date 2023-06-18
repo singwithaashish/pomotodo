@@ -80,7 +80,7 @@ const TaskPage: FC = () => {
                 />
                 <Text>Sort by</Text>
                 <Select
-                  options={["all","created", "updated", "due"]}
+                  options={["all","created", "updated", "due", "priority"]}
                   value={state.appliedFilters?.sort}
                   onChange={({ option }) => {
                     dispatch({
