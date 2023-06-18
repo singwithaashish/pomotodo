@@ -13,6 +13,12 @@
 
 
 ## Screenshots
+![Screenshot 2023-06-19 at 00-39-21 Create Next App](https://github.com/singwithaashish/pomotodo/assets/52033403/cb04c63b-50b0-4878-9ffe-de8de822a7f6)
+![Screenshot 2023-06-19 at 00-38-49 Create Next App](https://github.com/singwithaashish/pomotodo/assets/52033403/14ad7de4-9473-4ebc-88c7-aa6ab455ee87)
+![Screenshot 2023-06-19 at 00-38-37 Create Next App](https://github.com/singwithaashish/pomotodo/assets/52033403/3911f35d-174c-403b-949b-a5212438d1b4)
+![Screenshot 2023-06-19 at 00-37-26 Screenshot](https://github.com/singwithaashish/pomotodo/assets/52033403/9513c5b4-f39c-434a-889a-2418523f8e22)
+![Screenshot 2023-06-19 at 00-36-53 Create Next App](https://github.com/singwithaashish/pomotodo/assets/52033403/e616cacf-e7f7-4207-a135-9156c72a98cc)
+![Screenshot 2023-06-19 at 00-36-37 Create Next App](https://github.com/singwithaashish/pomotodo/assets/52033403/94f9a1a6-5ddd-4a70-bfab-d732b8102806)
 
 
 ## Tech Stack
