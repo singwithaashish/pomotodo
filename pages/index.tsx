@@ -75,3 +75,34 @@ export default function Home() {
     </>
   );
 }
+
+
+
+// type State = {
+//   tasks: Task[];
+//   currentTask: Task | null;
+//   editingTask: Task | null;
+//   currentSession: number;
+//   isSessionActive: boolean;
+//   sessionType: "work" | "shortBreak" | "longBreak";
+//   appliedFilters?: Filter;
+// };
+export const getServerSideProps = async () => {
+    try {
+      const response = await fetch("/api/tasks");
+      const data = await response.json();
+      return {
+        props: {
+          tasks: data,
+        },
+      };
+    }
+    catch (error) {
+      return {
+        props: {
+          tasks: [],
+        },
+      };
+    }
+
+}

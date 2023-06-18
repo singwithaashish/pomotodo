@@ -6,7 +6,7 @@ export type Task = {
   description: string;
   dueDate: string;
   tomatoes: number;
-  color: string;
+  priority: "low" | "medium" | "high";
   tomatoes: number;
   timeSpent?: number;
   createdAt?: string;

@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { Button, Form, FormField, TextInput, Box, DateInput } from "grommet";
+import { Button, Form, FormField, TextInput, Box, DateInput, Text, Select } from "grommet";
 import { Task } from "@/typings";
-import { HexColorInput, HexColorPicker } from "react-colorful";
 import { useAppState } from "../context/appStateContext";
 import { Add, Subtract } from "grommet-icons";
 import { parse } from "path";
@@ -19,7 +18,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
       description: "",
       dueDate: "",
       tomatoes: 0,
-      color: "#ea580c",
+      priority: "low",
     }
   );
 
@@ -30,7 +29,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         description: "",
         dueDate: "",
         tomatoes: 0,
-        color: "#ea580c",
+        priority: "low",
       }
     );
   }, [initialTask]);
@@ -82,7 +81,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         description: "",
         dueDate: "",
         tomatoes: 0,
-        color: "",
+        priority: "low",
       },
     });
     setShowTodoForm(false);
@@ -143,18 +142,28 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         />
       </FormField>
 
-      {/* <FormField name="color" htmlFor="color-input-id">
-        <HexColorPicker
-          id="color-input-id"
-          color={task.color || "#65a30d"}
-          onChange={(color) => {
-            setTask({
-              ...task,
-              color: color,
-            });
-          }}
-        />
-      </FormField> */}
+      <FormField name="priority" htmlFor="priority-input-id">
+        <Text weight="bold">Priority</Text>
+        <Box direction="row" align="center" gap="small">
+          <Select
+            id="priority-input-id"
+            name="priority"
+            placeholder="Priority"
+            options={["Low", "Medium", "High"]}
+            onChange={(event) => {
+              setTask({
+                ...task,
+                priority: event.value,
+              });
+            }
+          }
+          />
+        </Box>
+
+
+
+        
+      </FormField>
 
       <FormField name="tomatoes" htmlFor="number-input-id" validate={(value: string) => {
           if (!value || parseInt(value) <= 0) {

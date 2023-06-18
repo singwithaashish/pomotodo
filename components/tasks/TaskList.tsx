@@ -21,12 +21,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
   //   setAnimationCompleted(false);
   // }, [state.isSessionActive]);
 
-  return !(
-    // animationCompleted &&
-    state.isSessionActive &&
-    state.sessionType === "work"
-    && false
-  ) ? (
+  return (
     <Box
       pad="medium"
       style={{
@@ -123,62 +118,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
         )}
       </Box>
       
-    </Box>
-  ) : (
-    <Box
-      pad="medium"
-      style={{
-        overflow: "auto",
-        maxHeight: "calc(100vh - 200px)",
-        color: "white",
-      }}
-    >
-      <Heading
-        level="1"
-        alignSelf="center"
-        style={{ opacity: 0.6, fontWeight: "bold", letterSpacing: "0.05em" }}
-      >
-        FOCUS
-      </Heading>
-      <Text size="large" alignSelf="center" color={"white"}>
-        Task: {state.currentTask?.title}
-      </Text>
-      <Button
-        margin={{
-          top: "medium",
-        }}
-        style={{
-          borderRadius: "50px",
-          background: "linear-gradient(to right, #1e3c72, #2a5298)",
-          border: "none",
-          color: "white",
-        }}
-        label="Stop"
-        alignSelf="center"
-        primary
-        onClick={() => {
-          dispatch({ type: "END_SESSION" });
-          // setAnimationCompleted(true);
-        }}
-      />
-      <Box
-        style={{
-          position: "absolute",
-          bottom: "20px",
-          right: "0px",
-          width: "100%",
-          backgroundColor: "red",
-        }}
-      >
-        <Text
-          size="medium"
-          alignSelf="center"
-          color={"grey"}
-          style={{ opacity: 0.8 }}
-        >
-          {quotes[Math.floor(Math.random() * quotes.length)]}
-        </Text>
-      </Box>
     </Box>
   );
 };

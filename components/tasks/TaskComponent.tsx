@@ -2,14 +2,22 @@ import { Task } from "@/typings";
 import { Box, Button, Grid, Text, Menu, CheckBox } from "grommet";
 import React, { useEffect, useState } from "react";
 import { useAppState } from "../context/appStateContext";
-import { Checkbox, Clock, More, Time } from "grommet-icons";
+import {
+  Checkbox,
+  Clock,
+  More,
+  StatusCritical,
+  StatusGood,
+  StatusWarning,
+  Time,
+} from "grommet-icons";
 
 interface TaskComponentProps {
   task: Task;
   onDelete: (task: Task) => void;
   onEdit: (task: Task) => void;
   index: number;
-  setAnimationCompleted: any,
+  setAnimationCompleted: any;
   animationCompleted: boolean;
 }
 
@@ -20,18 +28,16 @@ export default function TaskComponent({
   index,
   setAnimationCompleted,
   animationCompleted,
-}:
-TaskComponentProps) {
+}: TaskComponentProps) {
   const { state, dispatch } = useAppState();
 
   useEffect(() => {
     setAnimationCompleted(false);
   }, [state.isSessionActive]);
 
-
-  return (state.isSessionActive &&
+  return state.isSessionActive &&
     animationCompleted &&
-    state.currentTask?.id !== task.id) ? null : (
+    state.currentTask?.id !== task.id ? null : (
     <Box
       direction="row"
       align="center"
@@ -72,7 +78,7 @@ TaskComponentProps) {
       }
       onAnimationEnd={() => {
         console.log(index, state.tasks.length - 1);
-        if ((index + 2 >= state.tasks.length) && state.isSessionActive) {
+        if (index + 2 >= state.tasks.length && state.isSessionActive) {
           // toggleAnimationCompleted(true);
           setAnimationCompleted(true);
           console.log(
@@ -84,26 +90,36 @@ TaskComponentProps) {
       }}
     >
       <Box direction="row" align="center" gap="small">
-        <CheckBox
-          checked={task.completed}
-          onChange={async () => {
-            const taskk: Task = { ...task, completed: !task.completed };
-            const data = await fetch(`/api/tasks/${task.id}`, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(taskk),
-            });
-            // console.log(data);
-            const res = await data.json();
-            // console.log(res);
-            dispatch({ type: "COMPLETE_TASK", task: res });
-          }}
-        />
-        <Box direction="column">
-          <Text weight="bold">{task.title}</Text>
-          <Text>{task.description}</Text>
+        <Box direction="column" align="center" justify="center">
+          <CheckBox
+            checked={task.completed}
+            onChange={async () => {
+              const taskk: Task = { ...task, completed: !task.completed };
+              const data = await fetch(`/api/tasks/${task.id}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(taskk),
+              });
+              // console.log(data);
+              const res = await data.json();
+              // console.log(res);
+              dispatch({ type: "COMPLETE_TASK", task: res });
+            }}
+          />
+        </Box>
+        <Box direction="column" justify="start">
+          <Box direction="row" gap="small" align="center">
+          <Text weight="bold">
+            {task.title}
+          </Text>
+            <PriorityIcon priority={task.priority} />
+          </Box>
+          <Text style={{
+            fontSize: "12px",
+            color: "#aaa"
+          }}>{task.description}</Text>
         </Box>
       </Box>
       <Box direction="column" align="end">
@@ -126,24 +142,51 @@ TaskComponentProps) {
           />
         </Box>
         <Box direction="row" gap="small">
-          {
-            [1, 2, 3, 4].map((item, i) => (
-              <Box
-                key={i}
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor:
-                    i + 1 < 100 / ((task.timeSpent || 100) * 60)
-                      ? "red"
-                      : "#ccc",
-                }}
-              ></Box>
-            ))
-          }
+          {[1, 2, 3, 4].map((item, i) => (
+            <Box
+              key={i}
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor:
+                  i + 1 < 100 / ((task.timeSpent || 100) * 60) ? "red" : "#ccc",
+              }}
+            ></Box>
+          ))}
         </Box>
       </Box>
     </Box>
   );
 }
+
+interface PriorityIconProps {
+  priority: string;
+}
+
+const PriorityIcon = ({ priority }: PriorityIconProps) => {
+  return (
+    <Box
+      direction="row"
+      gap="small"
+      justify="start"
+      align="center"
+      background={"light-2"}
+      style={{
+        borderRadius: "5px",
+        maxWidth: "fit-content",
+      }}
+    >
+      <Text size="small" weight={"lighter"}>
+        <StatusWarning
+          color={priority === "low" ? "orange" : "red"}
+          size="small"
+          style={{
+            marginRight: "5px",
+          }}
+        />
+        {priority}
+      </Text>
+    </Box>
+  );
+};

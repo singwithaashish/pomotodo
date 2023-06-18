@@ -16,7 +16,7 @@ model Task {
   description String
   dueDate     DateTime
   completed   Boolean  @default(false)
-  color       String
+  priority    String   @default("low")
   tomatoes    Int
   timeSpent   Int      @default(0)
   createdAt   DateTime @default(now())
