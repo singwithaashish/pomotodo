@@ -61,14 +61,17 @@ export const typeDefs = /* GraphQL */ `
       dueDate: DateTime!
       priority: String!
       tomatoes: Int!
+      completed: Boolean!
     ): Task!
     updateTask(
       id: Int!
-      title: String!
-      description: String!
-      dueDate: DateTime!
-      priority: String!
-      tomatoes: Int!
+      title: String
+      description: String
+      dueDate: DateTime
+      priority: String
+      tomatoes: Int
+      completed: Boolean
+      timeSpent: Int
     ): Task!
     deleteTask(id: Int!): Task!
   }

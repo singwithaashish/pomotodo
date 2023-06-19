@@ -166,18 +166,38 @@ export const resolvers = {
       });
       return task;
     },
+    // updateTask: async (_: any, args: any, context: any, info: any) => {
+    //   const { id, title, description, dueDate, priority, tomatoes, completed } = args;
+    //   const task = await prisma.task.update({
+    //     where: { id: id },
+    //     // TODO: also check that the user owns the task
+    //     data: {
+    //       title,
+    //       description,
+    //       dueDate,
+    //       priority,
+    //       tomatoes,
+    //       completed,
+    //     },
+    //   });
+    //   return task;
+    // },
     updateTask: async (_: any, args: any, context: any, info: any) => {
-      const { id, title, description, dueDate, priority, tomatoes } = args;
+      const { id, title, description, dueDate, priority, tomatoes, completed, timeSpent } = args;
+      
+      const dataToUpdate: any = {};
+      if (title !== undefined) dataToUpdate.title = title;
+      if (description !== undefined) dataToUpdate.description = description;
+      if (dueDate !== undefined) dataToUpdate.dueDate = dueDate;
+      if (priority !== undefined) dataToUpdate.priority = priority;
+      if (tomatoes !== undefined) dataToUpdate.tomatoes = tomatoes;
+      if (completed !== undefined) dataToUpdate.completed = completed;
+      if (timeSpent !== undefined) dataToUpdate.timeSpent = timeSpent;
+    
       const task = await prisma.task.update({
         where: { id: id },
         // TODO: also check that the user owns the task
-        data: {
-          title,
-          description,
-          dueDate,
-          priority,
-          tomatoes,
-        },
+        data: dataToUpdate,
       });
       return task;
     },

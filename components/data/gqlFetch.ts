@@ -50,6 +50,8 @@ export const UPDATE_TASK = gql`
     $dueDate: DateTime!
     $priority: String!
     $tomatoes: Int!
+    $completed: Boolean!
+    $timeSpent: Int!
   ) {
     updateTask(
       id: $id
@@ -58,6 +60,8 @@ export const UPDATE_TASK = gql`
       dueDate: $dueDate
       priority: $priority
       tomatoes: $tomatoes
+      completed: $completed
+      timeSpent: $timeSpent
     ) {
       id
       title
@@ -65,9 +69,21 @@ export const UPDATE_TASK = gql`
       dueDate
       tomatoes
       priority
+      completed
+      timeSpent
     }
   }
 `;
+
+export const MARK_CHECKED = gql`
+  mutation UpdateTask($id: Int!, $completed: Boolean!) {
+    updateTask(id: $id, completed: $completed) {
+      id
+      completed
+    }
+  }
+`;
+
 
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: Int!) {

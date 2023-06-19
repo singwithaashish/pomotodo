@@ -17,6 +17,7 @@ import { quotes } from "@/utils/quotes";
 import showNotification from "@/utils/notification";
 import { useMutation } from "@apollo/client";
 import { UPDATE_TASK } from "../data/gqlFetch";
+import { Task } from "@/typings";
 
 const MyTimer = () => {
   const [minutes, setMinutes] = useState(25);
@@ -81,12 +82,12 @@ const MyTimer = () => {
 
   const updateTask = async () => {
     try {
+      let temp : Task = state.currentTask ?? state.tasks[0];
+      temp.timeSpent = (temp.timeSpent || 0) + 25
+      temp.tomatoes -= 1;
+      // dispatch({type: 'UPDATE_TASK', task: {...state.currentTask!, tomatoes: state.currentTask!.tomatoes - 1, timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60}})
      await updateTaskgql({
-        variables: {
-          id: state.currentTask?.id,
-          tomatoes: state.currentTask!.tomatoes - 1,
-          timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
-        }
+        variables: temp,
       })
       
     } catch (error) {
@@ -95,6 +96,9 @@ const MyTimer = () => {
   };
 
   const startTimer = () => {
+if(state.currentTask === null){
+  dispatch({type: 'SET_CURRENT_TASK', task: state.tasks[0]})
+}
     setTotalSeconds(state.sessionType === "work" ? 1500 : state.sessionType === "shortBreak" ? 300 : 900);
     console.log(totalSeconds);
     state.isSessionActive

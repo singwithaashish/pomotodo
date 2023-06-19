@@ -1,5 +1,13 @@
 import { Task } from "@/typings";
-import { Box, Button, Grid, Text, Menu, CheckBox, ResponsiveContext } from "grommet";
+import {
+  Box,
+  Button,
+  Grid,
+  Text,
+  Menu,
+  CheckBox,
+  ResponsiveContext,
+} from "grommet";
 import React, { useEffect, useState } from "react";
 import { useAppState } from "../context/appStateContext";
 import {
@@ -12,7 +20,7 @@ import {
   Time,
 } from "grommet-icons";
 import { useMutation } from "@apollo/client";
-import { UPDATE_TASK } from "../data/gqlFetch";
+import { MARK_CHECKED, UPDATE_TASK } from "../data/gqlFetch";
 
 interface TaskComponentProps {
   task: Task;
@@ -32,7 +40,7 @@ export default function TaskComponent({
   animationCompleted,
 }: TaskComponentProps) {
   const { state, dispatch } = useAppState();
-  const [updateTaskgql, { data, loading, error }] = useMutation(UPDATE_TASK);
+  const [updateTaskgql, { data, loading, error }] = useMutation(MARK_CHECKED);
 
   useEffect(() => {
     setAnimationCompleted(false);
@@ -56,41 +64,31 @@ export default function TaskComponent({
       onClick={() => {
         dispatch({ type: "SET_CURRENT_TASK", task });
       }}
-      style={
-        state.isSessionActive &&
-        state.currentTask?.id !== task.id &&
-        state.sessionType === "work"
-          ? {
-              opacity: 1,
-              animation: `fadeOut 0.2s ${index * 0.2}s forwards`,
-              borderBottom: "1px solid #ccc",
-              padding: "10px",
-              backgroundColor: "#fff",
-              borderRadius: "5px",
-              marginBottom: "10px",
-              minHeight: "4rem",
-              borderLeft:
-                state.currentTask?.id === task.id ? "3px solid green" : "none",
-            }
-          : {
-              opacity: 0,
-              animation: `fadeIn 0.2s ${index * 0.2}s forwards`,
-              borderBottom: "1px solid #ccc",
-              padding: "10px",
-              backgroundColor: "#fff",
-              borderRadius: "5px",
-              marginBottom: "10px",
-              minHeight: "4rem",
-              borderLeft:
-                state.currentTask?.id === task.id
-                  ? "3px solid #ea580c"
-                  : "none",
-            }
-      }
+      style={{
+        opacity:
+          state.isSessionActive &&
+          state.currentTask?.id !== task.id &&
+          state.sessionType === "work"
+            ? 1
+            : 0,
+        animation:
+          state.isSessionActive &&
+          state.currentTask?.id !== task.id &&
+          state.sessionType === "work"
+            ? `fadeOut 0.2s ${index * 0.2}s forwards`
+            : `fadeIn 0.2s ${index * 0.2}s forwards`,
+        borderBottom: "1px solid #ccc",
+        padding: "10px",
+        backgroundColor: "#fff",
+        borderRadius: "5px",
+        marginBottom: "10px",
+        minHeight: "4rem",
+        borderLeft:
+          state.currentTask?.id === task.id ? "3px solid #ea580c" : "none",
+      }}
       onAnimationEnd={() => {
         if (index + 2 >= state.tasks.length && state.isSessionActive) {
           setAnimationCompleted(true);
-          
         }
       }}
     >
@@ -101,35 +99,45 @@ export default function TaskComponent({
             onChange={async () => {
               const taskk: Task = { ...task, completed: !task.completed };
               const res = await updateTaskgql({
-                variables: taskk
-              })
-
+                variables: {
+                  id: taskk.id,
+                  completed: taskk.completed,
+                }
+              });
             }}
           />
         </Box>
         <Box direction="column" justify="start">
           <ResponsiveContext.Consumer>
-            {size => 
-          <Text weight="normal" style={{
-            display: size === "small" ? "block" : "flex",
-            gap: "5px",
-          }} color={
-            task.completed ? "gray" : "black"
-          } >
-            {task.title}
-            <PriorityIcon priority={task.priority} />
-          </Text>
-            }
+            {(size) => (
+              <Text
+                weight="normal"
+                style={{
+                  display: size === "small" ? "block" : "flex",
+                  gap: "5px",
+                }}
+                color={task.completed ? "gray" : "black"}
+              >
+                {task.title}
+              </Text>
+            )}
           </ResponsiveContext.Consumer>
-          <Text style={{
-            fontSize: "12px",
-            color: "#aaa"
-          }}>{task.description}</Text>
+            <PriorityIcon priority={task.priority} />
+          <Text
+            style={{
+              fontSize: "12px",
+              color: "#aaa",
+            }}
+          >
+            {task.description}
+          </Text>
         </Box>
       </Box>
       <Box direction="column" align="end">
-        <Box direction="row" gap="small">
-          <Text alignSelf="center">🍅 {task.tomatoes}</Text>
+        <Box direction="row"  >
+          <Text alignSelf="center" style={{
+          minWidth: '2.6rem',
+        }}>🍅 {task.tomatoes}</Text>
           <Menu
             alignSelf="center"
             icon={<More />}
@@ -153,7 +161,7 @@ export default function TaskComponent({
                 height: "10px",
                 borderRadius: "50%",
                 backgroundColor:
-                  i + 1 < 100 / ((task.timeSpent || 100) * 60) ? "red" : "#ccc",
+                  i < ((task.timeSpent||0)/25) ? "red" : "#ccc",
               }}
             ></Box>
           ))}
@@ -177,10 +185,14 @@ const PriorityIcon = ({ priority }: PriorityIconProps) => {
         maxHeight: "1.5rem",
       }}
     >
-      <Text size="small" weight={"lighter"} style={{
-        display: "flex",
-        alignItems: "center",
-      }}>
+      <Text
+        size="small"
+        weight={"lighter"}
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <StatusWarning
           color={priority === "low" ? "orange" : "red"}
           size="small"
