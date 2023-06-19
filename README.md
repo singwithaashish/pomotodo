@@ -7,7 +7,7 @@
 - [x] UI/UX similar to the shared dribbble design but unique in its own way
 - [x] Analytics Dashboard with charts and graphs
 - [ ] Custom Task Categories (working on it)
-- [ ] PWAs
+- [x] PWAs
 - [x] Notifications
 - [ ] Hire a pigeon to send the flash drive with the source code to lief HQ
 
