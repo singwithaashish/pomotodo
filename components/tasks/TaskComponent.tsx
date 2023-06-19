@@ -40,7 +40,7 @@ export default function TaskComponent({
   animationCompleted,
 }: TaskComponentProps) {
   const { state, dispatch } = useAppState();
-  const [updateTaskgql, { data, loading, error }] = useMutation(MARK_CHECKED);
+  const [updateTaskgql, { data, loading, error }] = useMutation(UPDATE_TASK);
 
   useEffect(() => {
     setAnimationCompleted(false);
@@ -98,12 +98,15 @@ export default function TaskComponent({
             checked={task.completed}
             onChange={async () => {
               const taskk: Task = { ...task, completed: !task.completed };
+              try{
               const res = await updateTaskgql({
-                variables: {
-                  id: taskk.id,
-                  completed: taskk.completed,
-                }
+                variables: {...taskk},
               });
+              console.log(res);
+              } catch(e) {
+                console.log(e)
+              }
+
             }}
           />
         </Box>

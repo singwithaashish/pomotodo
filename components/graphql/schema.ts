@@ -61,7 +61,6 @@ export const typeDefs = /* GraphQL */ `
       dueDate: DateTime!
       priority: String!
       tomatoes: Int!
-      completed: Boolean!
     ): Task!
     updateTask(
       id: Int!

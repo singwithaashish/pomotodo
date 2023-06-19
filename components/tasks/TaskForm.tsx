@@ -97,14 +97,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     try {
       if (task.id) {
         await updateTask({
-          variables: {
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            dueDate: task.dueDate,
-            priority: task.priority,
-            tomatoes: task.tomatoes,
-          },
+          variables: {...task}
         });
       } else {
          await createTask({

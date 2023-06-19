@@ -6,10 +6,10 @@
 - [x] User Authentication with Auth0
 - [x] UI/UX similar to the shared dribbble design but unique in its own way
 - [x] Analytics Dashboard with charts and graphs
-- [ ] Custom Task Categories
+- [ ] Custom Task Categories (working on it)
 - [ ] PWAs
 - [x] Notifications
-- [ ] Hire a pigeon to send the flash drive with the source code to lief
+- [ ] Hire a pigeon to send the flash drive with the source code to lief HQ
 
 
 ## Screenshots
@@ -34,11 +34,27 @@
 
 ## Getting Started
 1. Clone the repo
-2. Install dependencies
+2. Add this to your `.env.local` file:
+```
+AUTH0_SECRET='<auth secret from Auth0>'
+AUTH0_BASE_URL='http://localhost:3000'
+AUTH0_ISSUER_BASE_URL='<issuer base url from auth0 >'
+AUTH0_CLIENT_ID='<Auth0 Client Id>'
+AUTH0_CLIENT_SECRET='<Auth0 Client secret>'
+```
+3. Add this to your `.env` file:
+```
+DATABASE_URL="<postgres URL>"
+NODE_ENV="development"
+```
+4. Install dependencies
 ```npm install```
-3. Run the development server
+5. Run the development server
 ```npm run dev```
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+
 
 
 

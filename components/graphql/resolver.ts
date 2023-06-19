@@ -3,17 +3,15 @@ import prisma from "../../lib/prisma";
 
 export const resolvers = {
   Query: {
-    tasks: async (_:any, args: any, context:any) => {
+    tasks: async (_: any, args: any, context: any) => {
       const session = await getSession(context.req, context.res);
       const userId = session?.user.sub;
       console.log(userId);
-      return prisma.task.findMany(
-        {
-          where: {
-            userId: userId,
-          },
+      return prisma.task.findMany({
+        where: {
+          userId: userId,
         },
-      );
+      });
     },
     // get one task by id
     task: async (_: any, args: any) => {
@@ -120,7 +118,6 @@ export const resolvers = {
       return result;
     },
     leaderboardData: async (_: any, __: any, context: any) => {
-
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       type UserWithTime = {
@@ -128,7 +125,6 @@ export const resolvers = {
         name: string | null;
         totalTimeSpent: number;
       };
-      
 
       const usersRanked: UserWithTime[] = await prisma.$queryRaw`
         SELECT "User"."id", "User"."name", SUM("Task"."timeSpent") as "totalTimeSpent"
@@ -161,7 +157,7 @@ export const resolvers = {
           dueDate,
           priority,
           tomatoes,
-          userId: userId, //"auth0|6489bc53e2873008daf4716c"//context.user.sub,
+          userId: userId,
         },
       });
       return task;
@@ -183,17 +179,32 @@ export const resolvers = {
     //   return task;
     // },
     updateTask: async (_: any, args: any, context: any, info: any) => {
-      const { id, title, description, dueDate, priority, tomatoes, completed, timeSpent } = args;
-      
+      const {
+        id,
+        title,
+        description,
+        dueDate,
+        priority,
+        tomatoes,
+        completed,
+        timeSpent,
+      } = args;
+
       const dataToUpdate: any = {};
-      if (title !== undefined) dataToUpdate.title = title;
-      if (description !== undefined) dataToUpdate.description = description;
-      if (dueDate !== undefined) dataToUpdate.dueDate = dueDate;
-      if (priority !== undefined) dataToUpdate.priority = priority;
-      if (tomatoes !== undefined) dataToUpdate.tomatoes = tomatoes;
-      if (completed !== undefined) dataToUpdate.completed = completed;
-      if (timeSpent !== undefined) dataToUpdate.timeSpent = timeSpent;
-    
+      if (title !== undefined && title !== null) dataToUpdate.title = title;
+      if (description !== undefined && description !== null)
+        dataToUpdate.description = description;
+      if (dueDate !== undefined && dueDate !== null)
+        dataToUpdate.dueDate = dueDate;
+      if (priority !== undefined && priority !== null)
+        dataToUpdate.priority = priority;
+      if (tomatoes !== undefined && tomatoes !== null)
+        dataToUpdate.tomatoes = tomatoes;
+      if (completed !== undefined && completed !== null)
+        dataToUpdate.completed = completed;
+      if (timeSpent !== undefined && timeSpent !== null)
+        dataToUpdate.timeSpent = timeSpent;
+
       const task = await prisma.task.update({
         where: { id: id },
         // TODO: also check that the user owns the task
