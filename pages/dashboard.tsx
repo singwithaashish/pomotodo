@@ -2,51 +2,89 @@ import { useAppState } from "@/components/context/appStateContext";
 import Graph from "@/components/dashboard/Graph";
 import PieChart from "@/components/dashboard/PieChart";
 import StatCard from "@/components/dashboard/StatCard";
+import { DASHBOARD_DATA } from "@/components/data/gqlFetch";
 import MyHeader from "@/components/layout/MyHeader";
+import { Task } from "@/typings";
+import { useMutation, useQuery } from "@apollo/client";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { User } from "@prisma/client";
+import { BarElement, CategoryScale, Chart, LinearScale } from "chart.js";
 import exp from "constants";
 import { Box, Button, DataTable, Grid, Header, Heading, Text } from "grommet";
-import { CaretLeftFill, FormPrevious, Previous } from "grommet-icons";
+import { BarChart, CaretLeftFill, FormPrevious, Previous } from "grommet-icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
 
+Chart.register(CategoryScale, LinearScale, BarElement);
 type UserWithTime = {
-  id: string;
+  // id: string;
   name: string | null;
   totalTimeSpent: number;
+};
+
+type DashboardDataType = {
+  remainingTasks: Task[];
+  timeSpentToday: number;
+  timeSpentPastDays: number;
+  tasksPerPriority: {
+    priority: string;
+    count: number;
+  }[];
+  timeSpentPerTask: {
+    title: string;
+    timeSpent: number;
+    id: number;
+  }[];
+  averageTimeSpentPerTask: number;
+};
+
+type AllDashboardData = {
+  leaderboardData: UserWithTime[];
+  dashboardData: DashboardDataType;
 };
 
 const Dashboard = () => {
   const { user, error, isLoading } = useUser();
   const { state, dispatch } = useAppState();
+  const { data, loading, error: err } = useQuery(DASHBOARD_DATA);
 
-  const [leaderboardData, setLeaderboardData] = useState<UserWithTime[]>([]);
-  const allDashboardData = {};
+  // const [leaderboardData, setLeaderboardData] = useState<UserWithTime[]>([]);
+  const [dashboardData, setDashboardData] = useState<
+    AllDashboardData | undefined
+  >();
 
   useEffect(() => {
-    // Fetch tasks here and setTasks
-    // const fetchTasks = async () => {
-    //   const response = await fetch("/api/tasks");
-    //   const data = await response.json();
-    //   //   setTasks(data);
-    //   dispatch({ type: "SET_TASKS", tasks: data });
-    // };
-    // fetchTasks();
-    getLeaderboardData();
-  }, []);
+    if (data) {
+      console.log(data);
+      // setLeaderboardData(data.dashboardData.leaderboardData);
+      setDashboardData(data as AllDashboardData);
+    }
+  }, [data]);
+  // Fetch tasks here and setTasks
+  // const fetchTasks = async () => {
+  //   const response = await fetch("/api/tasks");
+  //   const data = await response.json();
+  //   //   setTasks(data);
+  //   dispatch({ type: "SET_TASKS", tasks: data });
+  // };
+  // fetchTasks();
+  // getLeaderboardData();
+  // }, []);
 
-  const getLeaderboardData = async () => {
-    const response = await fetch("/api/tasks/dashboard", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data: UserWithTime[] = await response.json();
-    // console.log(data);
-    setLeaderboardData(data);
-  };
+  // const getLeaderboardData = async () => {
+  //   const response = await fetch("/api/tasks/dashboard", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  //   const data: UserWithTime[] = await response.json();
+  //   // console.log(data);
+  //   setLeaderboardData(data);
+  // };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Grid
@@ -61,7 +99,7 @@ const Dashboard = () => {
       columns={["flex", "flex"]}
       rows={["xxsmall", "medium", "medium", "flex"]}
       gap="small"
-      pad={"large"}
+      pad={{ horizontal: "medium" }}
       style={{
         backgroundColor: "#ccc",
         // boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.2)",
@@ -135,19 +173,55 @@ const Dashboard = () => {
         //   backdropFilter: "blur(10px)",
         // }}
       >
-        <Graph />
+        {dashboardData && (
+          <Bar
+            data={{
+              labels: dashboardData.dashboardData.tasksPerPriority.map(
+                (item) => item.priority
+              ),
+              datasets: [
+                {
+                  label: "Tasks per Priority",
+                  data: dashboardData.dashboardData.tasksPerPriority.map(
+                    (item: any) => item.count
+                  ),
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)",
+                  ],
+                  borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)",
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            }}
+            height={400}
+            width={600}
+            options={{
+              maintainAspectRatio: false,
+              // scales: {
+              //   y: {
+              //     beginAtZero: true,
+              //   },
+              // },
+            }}
+          />
+        )}
       </Box>
-      <Box gridArea="stat1" justify="center" align="center">
-        <StatCard label="Total Tasks" value={state.tasks.length} />
-      </Box>
-      <Box gridArea="stat2" justify="center" align="center">
-        <StatCard
-          label="Total Tomatoes"
-          value={state.tasks.reduce((acc, task) => acc + task.tomatoes, 0)}
-        />
-      </Box>
+
       <Box
         gridArea="dashboard"
+
         justify="center"
         round="small"
         align="center"
@@ -157,8 +231,9 @@ const Dashboard = () => {
         }}
       >
         <Heading level={3}>Leaderboard</Heading>
+        <Box direction="row" justify="between" align="center">
         <DataTable
-          data={leaderboardData.map((user) => {
+          data={dashboardData?.leaderboardData.map((user) => {
             return {
               name: user.name,
               totalTimeSpent: user.totalTimeSpent,
@@ -176,6 +251,17 @@ const Dashboard = () => {
             },
           ]}
         />
+        <Box justify="center" align="center" >
+          <StatCard label="Total Tasks" value={state.tasks.length} />
+        {/* </Box> */}
+        {/* <Box justify="center" align="center"> */}
+          <StatCard
+            label="Total Tomatoes"
+            value={state.tasks.reduce((acc, task) => acc + task.tomatoes, 0)}
+          />
+        </Box>
+
+      </Box>
       </Box>
     </Grid>
   );

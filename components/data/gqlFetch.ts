@@ -43,56 +43,88 @@ export const CREATE_TASK = gql`
 `;
 
 export const UPDATE_TASK = gql`
-    mutation UpdateTask(
-        $id: Int!
-        $title: String!
-        $description: String!
-        $dueDate: DateTime!
-        $priority: String!
-        $tomatoes: Int!
+  mutation UpdateTask(
+    $id: Int!
+    $title: String!
+    $description: String!
+    $dueDate: DateTime!
+    $priority: String!
+    $tomatoes: Int!
+  ) {
+    updateTask(
+      id: $id
+      title: $title
+      description: $description
+      dueDate: $dueDate
+      priority: $priority
+      tomatoes: $tomatoes
     ) {
-        updateTask(
-            id: $id
-            title: $title
-            description: $description
-            dueDate: $dueDate
-            priority: $priority
-            tomatoes: $tomatoes
-        ) {
-            id
-            title
-            description
-            dueDate
-            tomatoes
-            priority
-        }
+      id
+      title
+      description
+      dueDate
+      tomatoes
+      priority
     }
+  }
 `;
 
 export const DELETE_TASK = gql`
-    mutation DeleteTask($id: Int!) {
-        deleteTask(id: $id) {
-            id
-        }
+  mutation DeleteTask($id: Int!) {
+    deleteTask(id: $id) {
+      id
     }
+  }
 `;
-
 
 export const GET_TASK = gql`
-    query GetTask($id: Int!) {
-        task(id: $id) {
-            id
-            title
-            description
-            dueDate
-            tomatoes
-            priority
-            createdAt
-            updatedAt
-            completed
-            timeSpent
-        }
+  query GetTask($id: Int!) {
+    task(id: $id) {
+      id
+      title
+      description
+      dueDate
+      tomatoes
+      priority
+      createdAt
+      updatedAt
+      completed
+      timeSpent
     }
+  }
 `;
 
-
+export const DASHBOARD_DATA = gql`
+  query {
+    dashboardData {
+      remainingTasks {
+        id
+        title
+        description
+        dueDate
+        tomatoes
+        priority
+        createdAt
+        updatedAt
+        completed
+        timeSpent
+      }
+      timeSpentToday
+      timeSpentPastDays
+      tasksPerPriority {
+        priority
+        count
+      }
+      timeSpentPerTask {
+        id
+        title
+        timeSpent
+      }
+      avgTimeSpentPerTask
+    }
+    leaderboardData {
+      name
+      totalTimeSpent
+    }
+  }
+`;

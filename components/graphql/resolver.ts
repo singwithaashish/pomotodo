@@ -120,8 +120,6 @@ export const resolvers = {
       return result;
     },
     leaderboardData: async (_: any, __: any, context: any) => {
-      const session = context.session;
-      const userId = session?.user.sub;
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -132,7 +130,7 @@ export const resolvers = {
       };
       
 
-      const usersRanked: UserWithTime[] = await context.prisma.$queryRaw`
+      const usersRanked: UserWithTime[] = await prisma.$queryRaw`
         SELECT "User"."id", "User"."name", SUM("Task"."timeSpent") as "totalTimeSpent"
         FROM "Task"
         JOIN "User" ON "Task"."userId" = "User"."id"
