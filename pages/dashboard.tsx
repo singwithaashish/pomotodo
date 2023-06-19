@@ -3,16 +3,12 @@ import Graph from "@/components/dashboard/Graph";
 import PieChart from "@/components/dashboard/PieChart";
 import StatCard from "@/components/dashboard/StatCard";
 import { DASHBOARD_DATA } from "@/components/data/gqlFetch";
-import MyHeader from "@/components/layout/MyHeader";
 import { Task } from "@/typings";
-import { useMutation, useQuery } from "@apollo/client";
-import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-import { User } from "@prisma/client";
+import { useQuery } from "@apollo/client";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { BarElement, CategoryScale, Chart, LinearScale } from "chart.js";
-import exp from "constants";
-import { Box, Button, DataTable, Grid, Header, Heading, Text } from "grommet";
-import { BarChart, CaretLeftFill, FormPrevious, Previous } from "grommet-icons";
-import Link from "next/link";
+import { Box, DataTable, Grid, Header, Heading, Text } from "grommet";
+
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 
@@ -49,7 +45,6 @@ const Dashboard = () => {
   const { state, dispatch } = useAppState();
   const { data, loading, error: err } = useQuery(DASHBOARD_DATA);
 
-  // const [leaderboardData, setLeaderboardData] = useState<UserWithTime[]>([]);
   const [dashboardData, setDashboardData] = useState<
     AllDashboardData | undefined
   >();
@@ -61,28 +56,7 @@ const Dashboard = () => {
       setDashboardData(data as AllDashboardData);
     }
   }, [data]);
-  // Fetch tasks here and setTasks
-  // const fetchTasks = async () => {
-  //   const response = await fetch("/api/tasks");
-  //   const data = await response.json();
-  //   //   setTasks(data);
-  //   dispatch({ type: "SET_TASKS", tasks: data });
-  // };
-  // fetchTasks();
-  // getLeaderboardData();
-  // }, []);
-
-  // const getLeaderboardData = async () => {
-  //   const response = await fetch("/api/tasks/dashboard", {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   const data: UserWithTime[] = await response.json();
-  //   // console.log(data);
-  //   setLeaderboardData(data);
-  // };
+  
 
   if (isLoading) return <div>Loading...</div>;
 

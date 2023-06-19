@@ -8,14 +8,9 @@ interface StatCardProps {
 
 function StatCard({label, value} : StatCardProps) {
   return (
-    // <div>
-    //     <h3>{label}</h3>
-    //     <h1>{value}</h1>
-    // </div>
     <Box direction="column" pad={"small"} align="center" gap="xsmall" round="small" background={
         {
           color: "#fff",
-          // opacity: 0.8,
         }
     }>
         <Heading level={3} margin={{vertical: "xsmall"}}>{label}</Heading>

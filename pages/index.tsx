@@ -1,23 +1,14 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import TaskPage from "@/components/tasks/TaskPage";
 import {
-  Button,
   Grid,
-  Grommet,
-  Header,
-  Layer,
   Main,
-  Menu,
   ResponsiveContext,
-  grommet,
 } from "grommet";
-import MyHeader from "@/components/layout/MyHeader";
-import Timer from "@/components/pomodoro/Timer";
+
 import MyTimer from "@/components/pomodoro/Timer";
 import { useEffect, useState } from "react";
-// import the css home.module.css
 import "@/styles/Home.module.css";
 import { useAppState } from "@/components/context/appStateContext";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";

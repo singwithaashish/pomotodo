@@ -59,7 +59,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     } else if (error) {
       console.log(error);
     }
-  }, [data, loading, error]);
+  }, [data]);
 
   useEffect(() => {
     if (updateData) {
@@ -69,7 +69,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     } else if (updateError) {
       console.log(updateError);
     }
-  }, [updateData, updateLoading, updateError]);
+  }, [updateData]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTask({
@@ -95,21 +95,8 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      // onSubmit(task);
       if (task.id) {
-        // Update the task
-        // const response = await fetch(`/api/tasks/${task.id}`, {
-        //   method: "PUT",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(task),
-        // });
-        // const data = await response.json();
-
-        //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
-        // dispatch({ type: "UPDATE_TASK", task: data });
-        const result = await updateTask({
+        await updateTask({
           variables: {
             id: task.id,
             title: task.title,
@@ -119,20 +106,8 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             tomatoes: task.tomatoes,
           },
         });
-        console.log(result);
       } else {
-        // Create a new task
-        // const response = await fetch("/api/tasks", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(task),
-        // });
-        // console.log(response);
-        // const data = await response.json();
-        // console.log(task);
-        const result = await createTask({
+         await createTask({
           variables: {
             title: task.title,
             description: task.description,
@@ -141,27 +116,24 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             tomatoes: task.tomatoes,
           },
         });
-        console.log(result);
-
-        // dispatch({ type: "ADD_TASK", task: data });
       }
-      // when there is no editing task, the popup closes
-      // dispatch({
-      //   type: "SET_EDITING_TASK",
-      //   task: {
-      //     title: "",
-      //     description: "",
-      //     dueDate: "",
-      //     tomatoes: 0,
-      //     priority: "low",
-      //   },
-      // });
-      // setShowTodoForm(false);
+      
     } catch (error) {
       console.log(error);
     }
-    //   setCurrentTask(null);
   };
+
+  if (loading || updateLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error || updateError) {
+    return <Text>Error :(
+      {error?.message}
+      {updateError?.message}
+    )
+    </Text>;
+  }
 
   return (
     <Form onSubmit={handleSubmit}>

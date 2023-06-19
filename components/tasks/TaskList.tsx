@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { List, Box, Button, Text, Heading, Layer } from "grommet";
-import { Task, TaskListProps } from "@/typings";
+import { useState } from "react";
+import { Box, Button, Text, Heading, Layer } from "grommet";
+import { TaskListProps } from "@/typings";
 import TaskComponent from "./TaskComponent";
 import { useAppState } from "../context/appStateContext";
 import { quotes } from "@/utils/quotes";
@@ -9,17 +9,8 @@ import TaskForm from "./TaskForm";
 const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
   const [animationCompleted, setAnimationCompleted] = useState(false);
 
-  const { state, dispatch } = useAppState();
+  const { state } = useAppState();
   const [showTodoForm, setShowTodoForm] = useState(false);
-
-  // const toggleAnimationCompleted = (value: boolean) => {
-  //   console.log(animationCompleted, state.isSessionActive);
-  //   setAnimationCompleted(value);
-  // };
-
-  // useEffect(() => {
-  //   setAnimationCompleted(false);
-  // }, [state.isSessionActive]);
 
   return (
     <Box
@@ -103,7 +94,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
             index={i}
             setAnimationCompleted={setAnimationCompleted}
             animationCompleted={animationCompleted}
-            // toggleAnimationCompleted={toggleAnimationCompleted}
           />
         ))}
         {

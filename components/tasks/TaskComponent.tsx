@@ -89,7 +89,6 @@ export default function TaskComponent({
       }
       onAnimationEnd={() => {
         if (index + 2 >= state.tasks.length && state.isSessionActive) {
-          // toggleAnimationCompleted(true);
           setAnimationCompleted(true);
           
         }
@@ -101,18 +100,6 @@ export default function TaskComponent({
             checked={task.completed}
             onChange={async () => {
               const taskk: Task = { ...task, completed: !task.completed };
-              // const data = await fetch(`/api/tasks/${task.id}`, {
-              //   method: "PUT",
-              //   headers: {
-              //     "Content-Type": "application/json",
-              //   },
-              //   body: JSON.stringify(taskk),
-              // });
-              // // console.log(data);
-              // const res = await data.json();
-              // // console.log(res);
-              // dispatch({ type: "COMPLETE_TASK", task: res });
-
               const res = await updateTaskgql({
                 variables: taskk
               })
@@ -121,7 +108,6 @@ export default function TaskComponent({
           />
         </Box>
         <Box direction="column" justify="start">
-          {/* <Box direction="row" gap="small" align="center" justify="between"> */}
           <ResponsiveContext.Consumer>
             {size => 
           <Text weight="normal" style={{
@@ -135,7 +121,6 @@ export default function TaskComponent({
           </Text>
             }
           </ResponsiveContext.Consumer>
-          {/* </Box> */}
           <Text style={{
             fontSize: "12px",
             color: "#aaa"
@@ -148,8 +133,6 @@ export default function TaskComponent({
           <Menu
             alignSelf="center"
             icon={<More />}
-            // dropProps={{closeIndicator: false}}
-            // label="Actions"
             items={[
               {
                 label: "Edit",

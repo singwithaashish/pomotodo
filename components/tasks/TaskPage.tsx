@@ -18,6 +18,7 @@ import { Filter, User } from "grommet-icons";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { DELETE_TASK, allTasks } from "../data/gqlFetch";
+import FilterPopup from "../popups/FilterPopup";
 
 const TaskPage: FC = () => {
   //   const [tasks, setTasks] = useState<Task[]>([]);
@@ -31,7 +32,7 @@ const TaskPage: FC = () => {
 
   useEffect(() => {
     if (data) {
-      const tasks: Task[] = data.tasks.map((task: any) => {
+      const tasks: Task[] = data.tasks.map((task: Task) => {
         return {
           id: task.id,
           title: task.title,
@@ -93,62 +94,7 @@ const TaskPage: FC = () => {
           <Heading level="3">Tasks</Heading>
           <Button icon={<Filter />} onClick={() => setFilterMenu(true)} />
           {filterMenu && (
-            <Layer
-              onEsc={() => setFilterMenu(false)}
-              onClickOutside={() => setFilterMenu(false)}
-              style={{
-                overflow: "auto",
-              }}
-            >
-              <Box pad="medium" gap="small" width="medium">
-                <Heading level={3} margin="none">
-                  Apply Filter
-                </Heading>
-                <Text>Filter by</Text>
-                <Select
-                  options={["all", "overdue", "completed"]}
-                  value={state.appliedFilters?.show}
-                  onChange={({ option }) => {
-                    dispatch({
-                      type: "SET_FILTERS",
-                      filters: {
-                        ...state.appliedFilters,
-                        show: option,
-                      } as FLT,
-                    });
-                  }}
-                />
-                <Text>Sort by</Text>
-                <Select
-                  options={["all", "created", "updated", "due", "priority"]}
-                  value={state.appliedFilters?.sort}
-                  onChange={({ option }) => {
-                    dispatch({
-                      type: "SET_FILTERS",
-                      filters: {
-                        ...state.appliedFilters,
-                        sort: option,
-                      } as FLT,
-                    });
-                  }}
-                />
-                <Text>Order</Text>
-                <Select
-                  options={["asc", "desc"]}
-                  value={state.appliedFilters?.order}
-                  onChange={({ option }) => {
-                    dispatch({
-                      type: "SET_FILTERS",
-                      filters: {
-                        ...state.appliedFilters,
-                        order: option,
-                      } as FLT,
-                    });
-                  }}
-                />
-                <Button label="close" onClick={() => setFilterMenu(false)} />
-              </Box>
-            </Layer>
+            <FilterPopup setFilterMenu={() => setFilterMenu(false)}  />
           )}
         </Box>
         <Link href="/dashboard">
