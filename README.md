@@ -34,6 +34,7 @@
 - Apollo
 - Prisma
 - PostgreSQL
+- Supabase
 
 
 ## Getting Started
