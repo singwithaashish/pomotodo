@@ -7,7 +7,7 @@ import { Task } from "@/typings";
 import { useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { BarElement, CategoryScale, Chart, LinearScale } from "chart.js";
-import { Box, DataTable, Grid, Header, Heading, Text } from "grommet";
+import { Box, DataTable, Grid, Header, Heading, ResponsiveContext, Text } from "grommet";
 
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -56,11 +56,14 @@ const Dashboard = () => {
       setDashboardData(data as AllDashboardData);
     }
   }, [data]);
-  
 
   if (isLoading) return <div>Loading...</div>;
 
   return (
+    <ResponsiveContext.Consumer>
+      {
+        (size) => 
+      
     <Grid
       areas={[
         { name: "header", start: [0, 0], end: [2, 0] },
@@ -76,21 +79,10 @@ const Dashboard = () => {
       pad={{ horizontal: "medium" }}
       style={{
         backgroundColor: "#ccc",
+        minHeight: "100vh",
         // boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.2)",
       }}
     >
-      {/* <Heading level={1} gridArea="header" alignSelf="center" color="#fff">
-        <Link href="/">
-          <Button
-            icon={<FormPrevious color="#fff" />}
-            style={{
-              width: "30px",
-              height: "30px",
-            }}
-          />
-        </Link>
-        Dashboard
-      </Heading> */}
       <Box
         gridArea="chart"
         pad="medium"
@@ -103,9 +95,11 @@ const Dashboard = () => {
         }}
       >
         {/* <Heading level="3">Chart</Heading> */}
-        <Box direction="row" justify="between" align="center">
+        <Box direction={
+          size === "small" ? "column" : "row"
+        } justify="between" align="center">
           <Heading level="3">All Tasks</Heading>
-          <Box margin={{ left: "large" }} direction="column" align="start">
+          <Box margin={{ left: "large" }} gap={size === "small" ? "large" :"" } align="start">
             <Box margin={{ left: "small" }} direction="row" align="center">
               <div
                 style={{
@@ -195,7 +189,6 @@ const Dashboard = () => {
 
       <Box
         gridArea="dashboard"
-
         justify="center"
         round="small"
         align="center"
@@ -205,39 +198,44 @@ const Dashboard = () => {
         }}
       >
         <Heading level={3}>Leaderboard</Heading>
-        <Box direction="row" justify="between" align="center">
-        <DataTable
-          data={dashboardData?.leaderboardData.map((user) => {
-            return {
-              name: user.name,
-              totalTimeSpent: user.totalTimeSpent,
-            };
-          })}
-          columns={[
-            {
-              property: "name",
-              header: <Text>Name</Text>,
-              primary: true,
-            },
-            {
-              property: "totalTimeSpent",
-              header: <Text>Total Time Spent</Text>,
-            },
-          ]}
-        />
-        <Box justify="center" align="center" >
-          <StatCard label="Total Tasks" value={state.tasks.length} />
-        {/* </Box> */}
-        {/* <Box justify="center" align="center"> */}
-          <StatCard
-            label="Total Tomatoes"
-            value={state.tasks.reduce((acc, task) => acc + task.tomatoes, 0)}
+        
+        <Box direction={
+          size === "small" ? "column" : "row"
+        } justify="between" align="center">
+          <DataTable
+            data={dashboardData?.leaderboardData.map((user) => {
+              return {
+                name: user.name,
+                totalTimeSpent: user.totalTimeSpent,
+              };
+            })}
+            columns={[
+              {
+                property: "name",
+                header: <Text>Name</Text>,
+                primary: true,
+              },
+              {
+                property: "totalTimeSpent",
+                header: <Text>Total Time Spent</Text>,
+              },
+            ]}
           />
+          <Box justify="center" align="center">
+            <StatCard label="Total Tasks" value={state.tasks.length} />
+            {/* </Box> */}
+            {/* <Box justify="center" align="center"> */}
+            <StatCard
+              label="Total Tomatoes"
+              value={state.tasks.reduce((acc, task) => acc + task.tomatoes, 0)}
+            />
+          </Box>
         </Box>
-
-      </Box>
       </Box>
     </Grid>
+    }
+
+    </ResponsiveContext.Consumer>
   );
 };
 

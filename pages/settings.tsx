@@ -12,7 +12,9 @@ import { useEffect, useState } from 'react';
   if (error) return <div>{error.message}</div>;
 
   return (
-    user && <Box align="center" pad="large">
+    user && <Box align="center" pad="large" style={{
+      minHeight: "100vh",
+    }}>
       <Card height="medium" width="medium" background="light-1" elevation="medium" >
         <CardBody pad="medium" align="center">
           <Avatar src={user!.picture || ""} size="xlarge" round="full" />

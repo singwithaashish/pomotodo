@@ -1,4 +1,4 @@
-import { Box, Button, Header, Heading, Layer, Menu, Text } from "grommet";
+import { Anchor, Box, Button, Header, Heading, Layer, Menu, Text } from "grommet";
 import { FC, useState } from "react";
 import TaskForm from "../tasks/TaskForm";
 import { useAppState } from "../context/appStateContext";
@@ -7,32 +7,51 @@ import Link from "next/link";
 function MyHeader() {
   const [showTodoForm, setShowTodoForm] = useState(false);
   const { state, dispatch } = useAppState();
+  const currentPath =
+    typeof window !== "undefined" ? window.location.pathname : "";
   return (
     <Header background="brand">
-      <Link href={"/"}>
-
-      <Button hoverIndicator>
-        <Box pad="small">
+      <Box pad="small" direction="row" align="center" gap="small">
+        <Link href={"/"} style={{ textDecoration: 'none' }}>
           <Heading level="3" margin="none" color={"#fff"}>
             Pomo Todo
           </Heading>
-        </Box>
-      </Button>
-      </Link>
+        </Link>
+        <Link href={currentPath !== "/" ? "/" : "/dashboard"} style={{ textDecoration: 'none' }}>
+          <Heading level={4}  style={{
+            textDecoration: "none",
+            textUnderlineOffset: "2rem",
+            color: "#ccc",
+            fontWeight: 600
+          }}>
+          {currentPath !== "/" ? "home" : "dashboard"}
+          </Heading>
+        </Link>
+      </Box>
 
       {/* <Menu label="account" items={[{ label: "logout" }]} /> */}
       <Box direction="row" gap="small" justify="center">
         <Stats
           label="Done"
-          value={state.tasks.filter((task) => task?.completed).length.toString()}
+          value={state.tasks
+            .filter((task) => task?.completed)
+            .length.toString()}
         />
         <Stats
           label="Tomatoes"
-          value={state.tasks.map((task) => task.tomatoes).reduce((a, b) => a + b, 0).toString()}
+          value={state.tasks
+            .map((task) => task.tomatoes)
+            .reduce((a, b) => a + b, 0)
+            .toString()}
         />
         <Stats
           label="Focus Time"
-          value={state.tasks.map((task) => (task.timeSpent!)).reduce((a, b) => a + b, 0).toString() + " mins"}
+          value={
+            state.tasks
+              .map((task) => task.timeSpent!)
+              .reduce((a, b) => a + b, 0)
+              .toString() + " mins"
+          }
         />
       </Box>
     </Header>
