@@ -30,7 +30,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
       <Box style={{
         overflow: "scroll",
         // maxHeight: "calc(100vh - ",
-        height: "60vh",
+        maxHeight: "60vh",
       }}>
 
       
@@ -106,6 +106,13 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
             // toggleAnimationCompleted={toggleAnimationCompleted}
           />
         ))}
+        {
+          tasks.length === 0 && (
+            <Text size="small" margin="small" textAlign="center" color="dark-3">
+              No tasks yet. Lets add some!
+            </Text>
+          )
+        }
         </Box>
       <Box
         direction="row"
@@ -123,6 +130,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           borderRadius: "5px",
           minHeight: "4rem",
           marginBottom: "10px",
+          overflow: "hidden",
           animation: state.isSessionActive
             ? "fadeOut 0.2s forwards"
             : "fadeIn 0.2s forwards",

@@ -78,3 +78,21 @@ export const DELETE_TASK = gql`
 `;
 
 
+export const GET_TASK = gql`
+    query GetTask($id: Int!) {
+        task(id: $id) {
+            id
+            title
+            description
+            dueDate
+            tomatoes
+            priority
+            createdAt
+            updatedAt
+            completed
+            timeSpent
+        }
+    }
+`;
+
+

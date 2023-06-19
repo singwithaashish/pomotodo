@@ -15,10 +15,13 @@ import styles from "@/styles/Home.module.css";
 import { PauseFill, PlayFill, PowerReset } from "grommet-icons";
 import { quotes } from "@/utils/quotes";
 import showNotification from "@/utils/notification";
+import { useMutation } from "@apollo/client";
+import { UPDATE_TASK } from "../data/gqlFetch";
 
 const MyTimer = () => {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
+  const [updateTaskgql, {data, loading, error}] = useMutation(UPDATE_TASK);
   //   const [isRunning, setIsRunning] = useState(false);
   const [breakTime, setBreakTime] = useState(false);
   const [cycles, setCycles] = useState(0);
@@ -26,6 +29,12 @@ const MyTimer = () => {
   const { state, dispatch } = useAppState();
 
   const [totalSeconds, setTotalSeconds] = useState(0);
+
+  useEffect(() => {
+    if(data) {
+      dispatch({type: 'UPDATE_TASK', task: data.updateTask})
+    }
+  }, [data])
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
@@ -73,23 +82,32 @@ const MyTimer = () => {
 
   const updateTask = async () => {
     try {
-      const dat = await fetch(`/api/tasks/${state.currentTask?.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...state.currentTask,
+      // const dat = await fetch(`/api/tasks/${state.currentTask?.id}`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     ...state.currentTask,
+      //     tomatoes: state.currentTask!.tomatoes - 1,
+      //     timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
+      //   }),
+      // });
+      // const res = await dat.json();
+      const res = await updateTaskgql({
+        variables: {
+          id: state.currentTask?.id,
           tomatoes: state.currentTask!.tomatoes - 1,
           timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60,
-        }),
-      });
-      const res = await dat.json();
-      dispatch({
-        type: "UPDATE_TASK",
-        task: res,
-      });
-      console.log(res);
+        }
+      })
+
+      // dispatch({
+      //   type: "UPDATE_TASK",
+      //   task: data.updateTask,
+      // });
+      // console.log(res);
+      
     } catch (error) {
       console.log(error);
     }

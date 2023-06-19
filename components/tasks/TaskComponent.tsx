@@ -11,6 +11,8 @@ import {
   StatusWarning,
   Time,
 } from "grommet-icons";
+import { useMutation } from "@apollo/client";
+import { UPDATE_TASK } from "../data/gqlFetch";
 
 interface TaskComponentProps {
   task: Task;
@@ -30,10 +32,17 @@ export default function TaskComponent({
   animationCompleted,
 }: TaskComponentProps) {
   const { state, dispatch } = useAppState();
+  const [updateTaskgql, { data, loading, error }] = useMutation(UPDATE_TASK);
 
   useEffect(() => {
     setAnimationCompleted(false);
   }, [state.isSessionActive]);
+
+  useEffect(() => {
+    if (data) {
+      dispatch({ type: "UPDATE_TASK", task: data.updateTask });
+    }
+  }, [data]);
 
   return state.isSessionActive &&
     animationCompleted &&
@@ -92,17 +101,22 @@ export default function TaskComponent({
             checked={task.completed}
             onChange={async () => {
               const taskk: Task = { ...task, completed: !task.completed };
-              const data = await fetch(`/api/tasks/${task.id}`, {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(taskk),
-              });
-              // console.log(data);
-              const res = await data.json();
-              // console.log(res);
-              dispatch({ type: "COMPLETE_TASK", task: res });
+              // const data = await fetch(`/api/tasks/${task.id}`, {
+              //   method: "PUT",
+              //   headers: {
+              //     "Content-Type": "application/json",
+              //   },
+              //   body: JSON.stringify(taskk),
+              // });
+              // // console.log(data);
+              // const res = await data.json();
+              // // console.log(res);
+              // dispatch({ type: "COMPLETE_TASK", task: res });
+
+              const res = await updateTaskgql({
+                variables: taskk
+              })
+
             }}
           />
         </Box>

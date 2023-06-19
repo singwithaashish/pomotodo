@@ -34,15 +34,25 @@ export const typeDefs = /* GraphQL */ `
     avgTimeSpentPerTask: Float!
   }
 
+  
+
   type DayData {
     day: DateTime!
     total_time_spent: Int!
   }
 
+  type UserWithTime {
+    id: String!
+    name: String!
+    totalTimeSpent: Int!
+  }
+
   type Query {
     tasks: [Task!]!
+    task(id: Int!): Task
     dashboardData: DashboardData!
     dashboardDataByDay: [DayData!]!
+    leaderboardData: [UserWithTime!]!
   }
   type Mutation {
     createTask(

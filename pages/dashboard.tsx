@@ -22,16 +22,17 @@ const Dashboard = () => {
   const { state, dispatch } = useAppState();
 
   const [leaderboardData, setLeaderboardData] = useState<UserWithTime[]>([]);
+  const allDashboardData = {};
 
   useEffect(() => {
     // Fetch tasks here and setTasks
-    const fetchTasks = async () => {
-      const response = await fetch("/api/tasks");
-      const data = await response.json();
-      //   setTasks(data);
-      dispatch({ type: "SET_TASKS", tasks: data });
-    };
-    fetchTasks();
+    // const fetchTasks = async () => {
+    //   const response = await fetch("/api/tasks");
+    //   const data = await response.json();
+    //   //   setTasks(data);
+    //   dispatch({ type: "SET_TASKS", tasks: data });
+    // };
+    // fetchTasks();
     getLeaderboardData();
   }, []);
 

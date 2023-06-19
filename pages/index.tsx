@@ -28,7 +28,10 @@ export default function Home() {
   const { state, dispatch } = useAppState();
 
   useEffect(() => {
-    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+    if (
+      Notification.permission !== "granted" &&
+      Notification.permission !== "denied"
+    ) {
       Notification.requestPermission();
     }
   }, []);
@@ -42,29 +45,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <Grommet theme={theme}> */}
-      {/* <MyHeader />  */}
-      {/* {
-          !state.isSessionActive && 
-        } */}
+      
       <Main
-        style={
-          state.isSessionActive
-            ? {
-                backgroundColor: "#e5e7eb",
-                animation: "fadeToBlack 1s forwards",
-              }
-            : {
-                backgroundColor: "#e5e7eb",
-                animation: "fadeFromBlack 1s forwards",
-              }
-        }
+        style={{
+          backgroundColor: "#e5e7eb",
+          animation: state.isSessionActive
+            ? "fadeToBlack 1s forwards"
+            : "fadeFromBlack 1s forwards",
+            minHeight: "88vh"
+        }}
       >
         <ResponsiveContext.Consumer>
           {(size) => (
             <Grid
               columns={size === "small" ? ["full"] : ["2/4", "2/4"]}
-              gap="small"
             >
               <MyTimer />
               <TaskPage />
@@ -75,35 +69,4 @@ export default function Home() {
       {/* </Grommet> */}
     </>
   );
-};
-
-
-
-// type State = {
-//   tasks: Task[];
-//   currentTask: Task | null;
-//   editingTask: Task | null;
-//   currentSession: number;
-//   isSessionActive: boolean;
-//   sessionType: "work" | "shortBreak" | "longBreak";
-//   appliedFilters?: Filter;
-// };
-export const getServerSideProps = async () => {
-    try {
-      const response = await fetch("/api/tasks");
-      const data = await response.json();
-      return {
-        props: {
-          tasks: data,
-        },
-      };
-    }
-    catch (error) {
-      return {
-        props: {
-          tasks: [],
-        },
-      };
-    }
-
 }

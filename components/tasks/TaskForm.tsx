@@ -14,9 +14,7 @@ import { useAppState } from "../context/appStateContext";
 import { Add, Subtract } from "grommet-icons";
 import { parse } from "path";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK } from "../data/gqlFetch";
-
-
+import { CREATE_TASK, UPDATE_TASK } from "../data/gqlFetch";
 
 interface TaskFormProps {
   setShowTodoForm: (show: boolean) => void;
@@ -35,6 +33,10 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     }
   );
   const [createTask, { data, loading, error }] = useMutation(CREATE_TASK);
+  const [
+    updateTask,
+    { data: updateData, loading: updateLoading, error: updateError },
+  ] = useMutation(UPDATE_TASK);
 
   useEffect(() => {
     setTask(
@@ -49,13 +51,25 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
   }, [initialTask]);
 
   useEffect(() => {
-    console.log(data, loading, error)
+    // console.log(data, loading, error)
     if (data) {
       console.log(data);
-      dispatch({ type: "ADD_TASK", task: data });
+      dispatch({ type: "ADD_TASK", task: data.createTask });
+      handleFormClose();
+    } else if (error) {
+      console.log(error);
     }
-  }
-  , [data, loading, error])
+  }, [data, loading, error]);
+
+  useEffect(() => {
+    if (updateData) {
+      console.log(updateData);
+      dispatch({ type: "UPDATE_TASK", task: updateData.updateTask });
+      handleFormClose();
+    } else if (updateError) {
+      console.log(updateError);
+    }
+  }, [updateData, updateLoading, updateError]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTask({
@@ -64,23 +78,48 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     });
   };
 
+  const handleFormClose = () => {
+    dispatch({
+      type: "SET_EDITING_TASK",
+      task: {
+        title: "",
+        description: "",
+        dueDate: "",
+        tomatoes: 0,
+        priority: "low",
+      },
+    });
+    setShowTodoForm(false);
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
       // onSubmit(task);
       if (task.id) {
         // Update the task
-        const response = await fetch(`/api/tasks/${task.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(task),
-        });
-        const data = await response.json();
+        // const response = await fetch(`/api/tasks/${task.id}`, {
+        //   method: "PUT",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(task),
+        // });
+        // const data = await response.json();
 
         //   setTasks(tasks.map((item) => (item.id === data.id ? data : item)));
-        dispatch({ type: "UPDATE_TASK", task: data });
+        // dispatch({ type: "UPDATE_TASK", task: data });
+        const result = await updateTask({
+          variables: {
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            priority: task.priority,
+            tomatoes: task.tomatoes,
+          },
+        });
+        console.log(result);
       } else {
         // Create a new task
         // const response = await fetch("/api/tasks", {
@@ -102,23 +141,22 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             tomatoes: task.tomatoes,
           },
         });
-        console.log(result)
-            
-        
+        console.log(result);
+
         // dispatch({ type: "ADD_TASK", task: data });
       }
       // when there is no editing task, the popup closes
-      dispatch({
-        type: "SET_EDITING_TASK",
-        task: {
-          title: "",
-          description: "",
-          dueDate: "",
-          tomatoes: 0,
-          priority: "low",
-        },
-      });
-      setShowTodoForm(false);
+      // dispatch({
+      //   type: "SET_EDITING_TASK",
+      //   task: {
+      //     title: "",
+      //     description: "",
+      //     dueDate: "",
+      //     tomatoes: 0,
+      //     priority: "low",
+      //   },
+      // });
+      // setShowTodoForm(false);
     } catch (error) {
       console.log(error);
     }
@@ -244,6 +282,22 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
       <Box direction="row" gap="medium">
         <Button type="submit" primary label="Submit" />
         <Button type="reset" label="Reset" />
+        <Button
+          label="Cancel"
+          onClick={() => {
+            dispatch({
+              type: "SET_EDITING_TASK",
+              task: {
+                title: "",
+                description: "",
+                dueDate: "",
+                tomatoes: 0,
+                priority: "low",
+              },
+            });
+            setShowTodoForm(false);
+          }}
+        />
       </Box>
     </Form>
   );
