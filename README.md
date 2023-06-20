@@ -20,6 +20,17 @@
 - [x] Notifications
 
 
+## Screenshots
+![Screenshot from 2023-06-19 17-41-52](https://github.com/singwithaashish/pomotodo/assets/52033403/973f2a00-b4d4-45d5-a457-5024f0a2d31a)
+![Screenshot from 2023-06-19 17-46-04](https://github.com/singwithaashish/pomotodo/assets/52033403/cb5c9333-3c5b-4f7b-ab15-78977784e0be)
+![Screenshot from 2023-06-19 17-46-31](https://github.com/singwithaashish/pomotodo/assets/52033403/8dcd8a5c-e45c-463f-95c4-7d14307d04ee)
+![Screenshot from 2023-06-19 17-47-37](https://github.com/singwithaashish/pomotodo/assets/52033403/14516378-6874-46d6-922a-2ce0a2dfb295)
+![Screen Shot 2023-06-19 at 17 43 25](https://github.com/singwithaashish/pomotodo/assets/52033403/31382c55-e013-4219-b67c-c7d0d309ec0a)
+![Screen Shot 2023-06-19 at 17 43 30](https://github.com/singwithaashish/pomotodo/assets/52033403/146a8dd5-3384-4311-9ef4-4c725c3c1a95)
+![Screen Shot 2023-06-19 at 17 43 41](https://github.com/singwithaashish/pomotodo/assets/52033403/8f6dd101-aad0-417f-bed9-f344e4863f84)
+![Screen Shot 2023-06-19 at 17 43 58](https://github.com/singwithaashish/pomotodo/assets/52033403/c6871f9f-496d-47cd-99d5-08922ca0dbe4)
+![Screen Shot 2023-06-19 at 17 44 15](https://github.com/singwithaashish/pomotodo/assets/52033403/1b94426a-9717-4b36-bed6-fed100a2deaa)
+
 
 
 ## Tech Stack
@@ -31,6 +42,7 @@
 - Apollo
 - Prisma
 - PostgreSQL
+- Supabase
 
 
 ## Getting Started
