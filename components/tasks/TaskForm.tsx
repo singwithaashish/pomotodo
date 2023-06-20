@@ -108,8 +108,8 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             dueDate: task.dueDate,
             priority: task.priority,
             tomatoes: task.tomatoes,
-            customFieldName: task.customField?.name,
-            customFieldValue: task.customField?.value
+            customFieldName: task.customField?.name || "",
+            customFieldValue: task.customField?.value || "",
           },
         });
       }

@@ -32,6 +32,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           customField: task.customField,
         };
       });
+      // console.log(tasks);
 
       dispatch({ type: "SET_TASKS", tasks: tasks });
       // console.log(state.tasks);

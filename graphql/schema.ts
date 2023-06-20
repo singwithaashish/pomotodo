@@ -1,8 +1,8 @@
 export const typeDefs = /* GraphQL */ `
   scalar DateTime
   type customField {
-    name: String!
-    value: String!
+    name: String
+    value: String
   }
   type Task {
     updatedAt: DateTime!
@@ -16,7 +16,7 @@ export const typeDefs = /* GraphQL */ `
     timeSpent: Int
     createdAt: DateTime!
     userId: String!
-    customField: customField!
+    customField: customField
   }
 
   type TaskPriorityCount {

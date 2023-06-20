@@ -135,10 +135,10 @@ export default function TaskComponent({
           </ResponsiveContext.Consumer>
           <Box direction="row" gap="small" align="center">
             <PriorityIcon priority={task.priority} />
-            <CustomFieldComponent
+            {task.customField?.name && <CustomFieldComponent
               name={task.customField?.name || "d"}
               value={task.customField?.value || "d"}
-            />
+            />}
           </Box>
 
           <Text
