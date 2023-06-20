@@ -17,7 +17,7 @@ live URL: https://pomotodo-five.vercel.app/
 - [x] User Authentication with Auth0
 - [x] UI/UX similar to the shared dribbble design but unique in its own way
 - [x] Analytics Dashboard with charts and graphs
-- [ ] Custom Task Categories (working on it)
+- [x] Custom Task Categories 
 - [x] PWAs
 - [x] Notifications
 
@@ -70,20 +70,20 @@ NODE_ENV="development"
 │   |   ├── MyHeader.tsx # Header component
 │   |   └── MyNabBar.tsx # Mobile navbar component, only shown on mobile
 │   ├── pomodoro
-│   |   └── Timer.tsx # Timer component
+│   |   └── Timer.tsx # Timer component with 25 minutes work and 5 minutes break (15 minutes break every 4 pomodoros)
 │   ├── popups
 │   |   └── FilterPopup.tsx # Filter task popup component
 │   └── tasks
-|       ├── TaskComponent.tsx # Task component
-│       ├── TaskForm.tsx # Task form component
-│       ├── TaskList.tsx # Task list component
-│       └── TaskPage.tsx # Task page component
+|       ├── TaskComponent.tsx # Task card with options to edit, delete and mark as done
+│       ├── TaskForm.tsx # Task form to add and edit tasks
+│       ├── TaskList.tsx # Task list map component
+│       └── TaskPage.tsx # Task page with task list and header
 ├── context
 |   └── appStateContext.tsx # Context for global state
 ├── graphql
-│   ├── context
-│   ├── resolvers
-│   ├── schema
+│   ├── context # Functions to get user and check if user is authenticated
+│   ├── resolvers # GraphQL resolvers
+│   ├── schema # GraphQL schema
 │   └── gqlQueries.ts # GraphQL queries
 ├── lib
 │   ├── apollo.ts # Apollo client
@@ -95,17 +95,17 @@ NODE_ENV="development"
 │   │   └── graphql.ts
 │   ├── _app.tsx
 │   ├── _document.tsx
-│   ├── dashboard
-│   ├── index.tsx
-│   ├── settings.tsx
-│   └── tasks.tsx
+│   ├── dashboard # Dashboard page with simple analytics
+│   ├── index.tsx 
+│   ├── settings.tsx # Simple settings page with logout button
+│   └── tasks.tsx # Only accessible on mobile
 ├── prisma
 │   ├── migrations
 │   └── schema.prisma
 ├── public
 │   ├── favicon.ico
 │   ├── images
-│   └── manifest.json
+│   └── manifest.json # PWA manifest
 ├── styles
 |   └── global.css
 ├── utils
