@@ -33,7 +33,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
       });
 
       dispatch({ type: "SET_TASKS", tasks: tasks });
-      console.log(state.tasks);
+      // console.log(state.tasks);
     }
   }, [data]);
 
@@ -50,7 +50,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           .sort((a, b) => {
             if (state.appliedFilters?.sort !== "all") {
               if (state.appliedFilters?.sort === "created") {
-                console.log("filtering by created");
+                // console.log("filtering by created");
                 return (
                   new Date(a.createdAt!).getTime() -
                   new Date(b.createdAt!).getTime()
@@ -161,7 +161,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           color="black" // adjust color as needed
           plain
         />
-        {state.currentFormOpen === "add" && (
+        {state.currentFormOpen !== "none" && (
           // (showTodoForm || state.editingTask?.title) &&
           <Layer
             onEsc={() => setShowTodoForm(false)}

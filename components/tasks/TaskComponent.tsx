@@ -103,14 +103,14 @@ export default function TaskComponent({
               onChange={async () => {
                 const taskk: Task = { ...task, completed: !task.completed };
                 try {
-                  console.log(taskk)
+                  // console.log(taskk)
                   const res = await updateTaskgql({
                     variables: {
                       id: taskk.id,
                       completed: taskk.completed,
                     }
                   });
-                  console.log(res);
+                  // console.log(res);
                 } catch (e) {
                   console.log(e);
                 }
@@ -161,7 +161,9 @@ export default function TaskComponent({
               {
                 label: "Edit",
                 onClick: () => {
+                  dispatch({ type: "SET_CURRENT_FORM", formOpen: "edit" })
                   dispatch({ type: "SET_EDITING_TASK", task });
+                  // console.log(state.currentFormOpen)
                 },
               },
               { label: "Delete", onClick: () => onDelete(task) },

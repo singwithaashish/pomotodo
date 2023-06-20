@@ -78,6 +78,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
   };
 
   const handleFormClose = () => {
+    dispatch({ type: "SET_CURRENT_FORM", formOpen: "none" })
     dispatch({
       type: "SET_EDITING_TASK",
       task: {
@@ -89,7 +90,6 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
       },
     });
     setShowTodoForm(false);
-    dispatch({ type: "SET_CURRENT_FORM", formOpen: "none" })
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -249,7 +249,9 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         <Button type="reset" label="Reset" />
         <Button
           label="Cancel"
-          onClick={() => {handleFormClose();
+          onClick={(e) => {
+            e.stopPropagation();
+            handleFormClose();
             dispatch({ type: "SET_CURRENT_FORM", formOpen: "none" })
             console.log(state.currentFormOpen);
           }}

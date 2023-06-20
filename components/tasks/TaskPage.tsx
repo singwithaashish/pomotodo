@@ -13,7 +13,7 @@ import TaskList from "./TaskList";
 import { Filter as FLT, Task } from "@/typings";
 import { useAppState } from "../../context/appStateContext";
 import Link from "next/link";
-import { Filter, User } from "grommet-icons";
+import { Filter, SettingsOption, User } from "grommet-icons";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { DELETE_TASK, allTasks } from "../../graphql/gqlQueries";
@@ -77,7 +77,10 @@ const TaskPage: FC = () => {
         {/* <Link href="/dashboard">
           <Button primary label="Dashboard" />
         </Link> */}
-        <DropButton
+        <Link href="/settings">
+          <Button icon={<SettingsOption/>} />
+        </Link>
+        {/* <DropButton
           dropAlign={{ top: "bottom" }}
           icon={<Avatar src={user?.picture ? user.picture : ""} />}
           hoverIndicator
@@ -92,7 +95,7 @@ const TaskPage: FC = () => {
               <Text>Logout</Text>
             </Link>
           }
-        />
+        /> */}
       </Box>
       <TaskList
         tasks={state.tasks}
