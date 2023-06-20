@@ -147,7 +147,7 @@ export const resolvers = {
 
   Mutation: {
     createTask: async (_: any, args: any, context: any, info: any) => {
-      const { title, description, dueDate, priority, tomatoes } = args;
+      const { title, description, dueDate, priority, tomatoes, customFieldName, customFieldValue } = args;
       const session = await getSession(context.req, context.res);
       const userId = session?.user.sub;
       const task = await prisma.task.create({
@@ -159,6 +159,13 @@ export const resolvers = {
           tomatoes,
           userId: userId,
           timeSpent: 0,
+          customField: customFieldName ? {
+            // create: {
+              name: customFieldName,
+              value: customFieldValue,
+            // },
+          } : {},
+
         },
       });
       return task;
@@ -189,6 +196,8 @@ export const resolvers = {
         tomatoes,
         completed,
         timeSpent,
+        customFieldName,
+        customFieldValue,
       } = args;
 
       const dataToUpdate: any = {};
@@ -205,6 +214,12 @@ export const resolvers = {
         dataToUpdate.completed = completed;
       if (timeSpent !== undefined && timeSpent !== null)
         dataToUpdate.timeSpent = timeSpent;
+      if (customFieldName !== undefined && customFieldName !== null)
+        dataToUpdate.customField = {
+          name: customFieldName,
+          value: customFieldValue,
+        }
+
 
       const task = await prisma.task.update({
         where: { id: id },
@@ -224,6 +239,26 @@ export const resolvers = {
         where: { id: id },
       });
       return task;
+    },
+    addCustomFieldToTask: async (
+      _: any,
+      args: { id: number; name: string; value: string },
+      context: any,
+      info: any
+    ) => {
+      const { id, name, value } = args;
+      const customField = await prisma.task.update({
+        where: { id: id },
+        data: {
+          customField: {
+            // create: {
+              name: name,
+              value: value,
+            // }
+          }
+        },
+      });
+      return customField;
     },
   },
 };

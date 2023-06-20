@@ -1,13 +1,8 @@
 import { FC, useContext, useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   Button,
-  DropButton,
   Heading,
-  Layer,
-  Select,
-  Text,
 } from "grommet";
 import TaskList from "./TaskList";
 import { Filter as FLT, Task } from "@/typings";

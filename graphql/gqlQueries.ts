@@ -13,6 +13,10 @@ export const allTasks = gql`
       updatedAt
       completed
       timeSpent
+      customField {
+        name
+        value
+      }
     }
   }
 `;
@@ -24,6 +28,9 @@ export const CREATE_TASK = gql`
     $dueDate: DateTime!
     $priority: String!
     $tomatoes: Int!
+    $customFieldName: String!
+    $customFieldValue: String!
+
   ) {
     createTask(
       title: $title
@@ -31,6 +38,8 @@ export const CREATE_TASK = gql`
       dueDate: $dueDate
       priority: $priority
       tomatoes: $tomatoes
+      customFieldName: $customFieldName
+      customFieldValue: $customFieldValue 
     ) {
       id
       title
@@ -38,6 +47,10 @@ export const CREATE_TASK = gql`
       dueDate
       tomatoes
       priority
+      customField {
+        name
+        value
+      }
     }
   }
 `;
@@ -52,6 +65,8 @@ export const UPDATE_TASK = gql`
     $tomatoes: Int!
     $completed: Boolean!
     $timeSpent: Int!
+    $customFieldName: String!
+    $customFieldValue: String!
   ) {
     updateTask(
       id: $id
@@ -62,6 +77,8 @@ export const UPDATE_TASK = gql`
       tomatoes: $tomatoes
       completed: $completed
       timeSpent: $timeSpent
+      customFieldName: $customFieldName
+      customFieldValue: $customFieldValue
     ) {
       id
       title
@@ -71,6 +88,10 @@ export const UPDATE_TASK = gql`
       priority
       completed
       timeSpent
+      customField {
+        name
+        value
+      }
     }
   }
 `;
@@ -86,6 +107,10 @@ export const MARK_CHECKED = gql`
       priority
       completed
       timeSpent
+      customField{
+        name
+        value
+      }
     }
   }
 `;
@@ -112,6 +137,7 @@ export const GET_TASK = gql`
       updatedAt
       completed
       timeSpent
+      customField
     }
   }
 `;

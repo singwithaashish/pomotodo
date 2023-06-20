@@ -29,6 +29,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
           updatedAt: task.updatedAt,
           completed: task.completed,
           timeSpent: task.timeSpent,
+          customField: task.customField,
         };
       });
 

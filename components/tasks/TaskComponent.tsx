@@ -108,7 +108,7 @@ export default function TaskComponent({
                     variables: {
                       id: taskk.id,
                       completed: taskk.completed,
-                    }
+                    },
                   });
                   // console.log(res);
                 } catch (e) {
@@ -133,7 +133,14 @@ export default function TaskComponent({
               </Text>
             )}
           </ResponsiveContext.Consumer>
-          <PriorityIcon priority={task.priority} />
+          <Box direction="row" gap="small" align="center">
+            <PriorityIcon priority={task.priority} />
+            <CustomFieldComponent
+              name={task.customField?.name || "d"}
+              value={task.customField?.value || "d"}
+            />
+          </Box>
+
           <Text
             style={{
               fontSize: "12px",
@@ -161,7 +168,7 @@ export default function TaskComponent({
               {
                 label: "Edit",
                 onClick: () => {
-                  dispatch({ type: "SET_CURRENT_FORM", formOpen: "edit" })
+                  dispatch({ type: "SET_CURRENT_FORM", formOpen: "edit" });
                   dispatch({ type: "SET_EDITING_TASK", task });
                   // console.log(state.currentFormOpen)
                 },
@@ -199,7 +206,8 @@ const PriorityIcon = ({ priority }: PriorityIconProps) => {
       background={"light-2"}
       style={{
         borderRadius: "5px",
-        maxWidth: "fit-content",
+        // maxWidth: "fit-content",
+        padding: "0px 5px",
         maxHeight: "1.5rem",
       }}
     >
@@ -220,6 +228,34 @@ const PriorityIcon = ({ priority }: PriorityIconProps) => {
         />
         {priority}
       </Text>
+    </Box>
+  );
+};
+
+interface CustomFieldComponentProps {
+  name: string;
+  value: string;
+}
+
+const CustomFieldComponent = ({ name, value }: CustomFieldComponentProps) => {
+  return (
+    <Box direction="row" align="center" style={{
+      minWidth: "fit-content",
+      backgroundColor: "#f5f5f5",
+      borderRadius: "5px",
+      padding: "0px 5px"
+    }}>
+      {/* <Text size="small" weight="bold" style={{
+        color: "#666",
+      }}
+      >{name}:</Text> */}
+      <Text
+        size="small"
+        style={{
+          color: "#555",
+          marginLeft: "5px",
+        }}
+      >{name}:{" "}{value}</Text>
     </Box>
   );
 };

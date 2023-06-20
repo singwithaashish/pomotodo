@@ -10,6 +10,10 @@ export type Task = {
   tomatoes: number;
   timeSpent?: number;
   createdAt?: string;
+  customField?: {
+    name: string;
+    value: string;
+  }
 };
 
 type Filter = {

@@ -96,8 +96,9 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
     event.preventDefault();
     try {
       if (task.id) {
+        console.log(task);
         await updateTask({
-          variables: {...task}
+          variables: {...task, customFieldName: task.customField?.name, customFieldValue: task.customField?.value}
         });
       } else {
          await createTask({
@@ -107,6 +108,8 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
             dueDate: task.dueDate,
             priority: task.priority,
             tomatoes: task.tomatoes,
+            customFieldName: task.customField?.name,
+            customFieldValue: task.customField?.value
           },
         });
       }
@@ -243,8 +246,49 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
           />
         </Box>
       </FormField>
+      <FormField name="customField" htmlFor="custom-field">
+            <Box direction="row" align="center" gap="small">
+              <TextInput
+                id="custom-field-key"
+                name="customField"
+                placeholder="Custom Key"
+                onChange={
+                  (e) => {
+                    setTask({
+                      ...task,
+                      customField: {
+                        name: e.target.value,
+                        value: task.customField?.value || ""
+                      }
+                    })
+                  }
+                }
+                value={
+                  task.customField?.name || ""
+                }
+              />
+              <TextInput
+                id="custom-field-value"
+                name="customField"
+                placeholder="Custom Value"
+                onChange={
+                  (e) => {
+                    setTask({
+                      ...task,
+                      customField: {
+                        name: task.customField?.name || "",
+                        value: e.target.value
+                      }
+                    })
+                  }
+                }
+                value={task.customField?.value || ""}
+              />
+            </Box>
+        
+      </FormField>
 
-      <Box direction="row" gap="medium">
+      <Box direction="row" gap="small">
         <Button type="submit" primary label="Submit" />
         <Button type="reset" label="Reset" />
         <Button

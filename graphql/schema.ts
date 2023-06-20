@@ -1,5 +1,9 @@
 export const typeDefs = /* GraphQL */ `
   scalar DateTime
+  type customField {
+    name: String!
+    value: String!
+  }
   type Task {
     updatedAt: DateTime!
     id: Int
@@ -12,6 +16,7 @@ export const typeDefs = /* GraphQL */ `
     timeSpent: Int
     createdAt: DateTime!
     userId: String!
+    customField: customField!
   }
 
   type TaskPriorityCount {
@@ -61,6 +66,8 @@ export const typeDefs = /* GraphQL */ `
       dueDate: DateTime!
       priority: String!
       tomatoes: Int!
+      customFieldName: String
+      customFieldValue: String
     ): Task!
     updateTask(
       id: Int!
@@ -71,7 +78,10 @@ export const typeDefs = /* GraphQL */ `
       tomatoes: Int
       completed: Boolean
       timeSpent: Int
+      customFieldName: String
+      customFieldValue: String
     ): Task!
     deleteTask(id: Int!): Task!
+    addCustomFieldToTask(id: Int!, name: String!, value: String!): Task!
   }
 `;
