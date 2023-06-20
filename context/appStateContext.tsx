@@ -12,6 +12,7 @@ type State = {
   isSessionActive: boolean;
   sessionType: "work" | "shortBreak" | "longBreak";
   appliedFilters?: Filter;
+  currentFormOpen?: "none" | "add" | "edit";
 };
 
 type Action =
@@ -26,6 +27,7 @@ type Action =
   | { type: "START_SESSION" }
   | { type: "END_SESSION" }
   | { type: "SET_FILTERS"; filters: Filter }
+  | { type: "SET_CURRENT_FORM"; formOpen: "none" | "add" | "edit" }
   | {
       type: "SET_SESSION_TYPE";
       sessionType: "work" | "shortBreak" | "longBreak";
@@ -43,6 +45,7 @@ const initialState: State = {
     show: "all", // "completed" | "overdue" | "all"
     order: "desc", // "asc" | "desc"
   } as Filter,
+  currentFormOpen: "none",
 };
 
 function reducer(state: State, action: Action): State {
@@ -82,6 +85,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, isSessionActive: false };
     case "SET_FILTERS":
       return { ...state, appliedFilters: action.filters };
+    case "SET_CURRENT_FORM":
+      return { ...state, currentFormOpen: action.formOpen };
     case "SET_SESSION_TYPE":
       return { ...state, sessionType: action.sessionType };
     default:

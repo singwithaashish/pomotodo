@@ -1,6 +1,5 @@
 import { Anchor, Box, Button, Header, Heading, Layer, Menu, Text } from "grommet";
 import { FC, useState } from "react";
-import TaskForm from "../tasks/TaskForm";
 import { useAppState } from "../../context/appStateContext";
 import Link from "next/link";
 
@@ -47,9 +46,9 @@ function MyHeader() {
         <Stats
           label="Focus Time"
           value={
-            state.tasks
+            (state.tasks
               .map((task) => task.timeSpent!)
-              .reduce((a, b) => a + b, 0)
+              .reduce((a, b) => a + b, 0) || 0)
               .toString() + " mins"
           }
         />

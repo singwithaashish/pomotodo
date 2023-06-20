@@ -78,12 +78,11 @@ NODE_ENV="development"
 │       └── TaskPage.tsx # Task page component
 ├── context
 |   └── appStateContext.tsx # Context for global state
-├── data
-│   └── gqlFetch.ts # GraphQL queries
 ├── graphql
 │   ├── context
 │   ├── resolvers
-│   └── schema
+│   ├── schema
+│   └── gqlQueries.ts # GraphQL queries
 ├── lib
 │   ├── apollo.ts # Apollo client
 │   └── prisma.ts # Prisma client

@@ -14,7 +14,7 @@ import { useAppState } from "../../context/appStateContext";
 import { Add, Subtract } from "grommet-icons";
 import { parse } from "path";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, UPDATE_TASK } from "../../data/gqlFetch";
+import { CREATE_TASK, UPDATE_TASK } from "../../graphql/gqlQueries";
 
 interface TaskFormProps {
   setShowTodoForm: (show: boolean) => void;
@@ -63,7 +63,6 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
 
   useEffect(() => {
     if (updateData) {
-      console.log(updateData);
       dispatch({ type: "UPDATE_TASK", task: updateData.updateTask });
       handleFormClose();
     } else if (updateError) {
@@ -90,6 +89,7 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
       },
     });
     setShowTodoForm(false);
+    dispatch({ type: "SET_CURRENT_FORM", formOpen: "none" })
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -249,18 +249,9 @@ const TaskForm = ({ setShowTodoForm }: TaskFormProps) => {
         <Button type="reset" label="Reset" />
         <Button
           label="Cancel"
-          onClick={() => {
-            dispatch({
-              type: "SET_EDITING_TASK",
-              task: {
-                title: "",
-                description: "",
-                dueDate: "",
-                tomatoes: 0,
-                priority: "low",
-              },
-            });
-            setShowTodoForm(false);
+          onClick={() => {handleFormClose();
+            dispatch({ type: "SET_CURRENT_FORM", formOpen: "none" })
+            console.log(state.currentFormOpen);
           }}
         />
       </Box>

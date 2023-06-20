@@ -21,7 +21,7 @@ import {
   Time,
 } from "grommet-icons";
 import { useMutation } from "@apollo/client";
-import { MARK_CHECKED, UPDATE_TASK } from "../../data/gqlFetch";
+import { MARK_CHECKED, UPDATE_TASK } from "../../graphql/gqlQueries";
 
 interface TaskComponentProps {
   task: Task;
@@ -41,7 +41,7 @@ export default function TaskComponent({
   animationCompleted,
 }: TaskComponentProps) {
   const { state, dispatch } = useAppState();
-  const [updateTaskgql, { data, loading, error }] = useMutation(UPDATE_TASK);
+  const [updateTaskgql, { data, loading, error }] = useMutation(MARK_CHECKED);
 
   useEffect(() => {
     setAnimationCompleted(false);
@@ -95,25 +95,28 @@ export default function TaskComponent({
     >
       <Box direction="row" align="center" gap="small">
         <Box direction="column" align="center" justify="center">
-          {
-            loading ? <InProgress/> : 
-          
-          <CheckBox
-            checked={task.completed}
-            onChange={async () => {
-              const taskk: Task = { ...task, completed: !task.completed };
-              try{
-              const res = await updateTaskgql({
-                variables: {...taskk},
-              });
-              console.log(res);
-              } catch(e) {
-                console.log(e)
-              }
-
-            }}
-          />
-}
+          {loading ? (
+            <InProgress />
+          ) : (
+            <CheckBox
+              checked={task.completed}
+              onChange={async () => {
+                const taskk: Task = { ...task, completed: !task.completed };
+                try {
+                  console.log(taskk)
+                  const res = await updateTaskgql({
+                    variables: {
+                      id: taskk.id,
+                      completed: taskk.completed,
+                    }
+                  });
+                  console.log(res);
+                } catch (e) {
+                  console.log(e);
+                }
+              }}
+            />
+          )}
         </Box>
         <Box direction="column" justify="start">
           <ResponsiveContext.Consumer>
@@ -130,7 +133,7 @@ export default function TaskComponent({
               </Text>
             )}
           </ResponsiveContext.Consumer>
-            <PriorityIcon priority={task.priority} />
+          <PriorityIcon priority={task.priority} />
           <Text
             style={{
               fontSize: "12px",
@@ -142,10 +145,15 @@ export default function TaskComponent({
         </Box>
       </Box>
       <Box direction="column" align="end">
-        <Box direction="row"  >
-          <Text alignSelf="center" style={{
-          minWidth: '2.6rem',
-        }}>🍅 {task.tomatoes}</Text>
+        <Box direction="row">
+          <Text
+            alignSelf="center"
+            style={{
+              minWidth: "2.6rem",
+            }}
+          >
+            🍅 {task.tomatoes}
+          </Text>
           <Menu
             alignSelf="center"
             icon={<More />}
@@ -169,7 +177,7 @@ export default function TaskComponent({
                 height: "10px",
                 borderRadius: "50%",
                 backgroundColor:
-                  i < ((task.timeSpent||0)/25) ? "red" : "#ccc",
+                  i < (task.timeSpent || 0) / 25 ? "red" : "#ccc",
               }}
             ></Box>
           ))}

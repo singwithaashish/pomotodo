@@ -158,6 +158,7 @@ export const resolvers = {
           priority,
           tomatoes,
           userId: userId,
+          timeSpent: 0,
         },
       });
       return task;

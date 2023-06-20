@@ -79,7 +79,13 @@ export const MARK_CHECKED = gql`
   mutation UpdateTask($id: Int!, $completed: Boolean!) {
     updateTask(id: $id, completed: $completed) {
       id
+      title
+      description
+      dueDate
+      tomatoes
+      priority
       completed
+      timeSpent
     }
   }
 `;

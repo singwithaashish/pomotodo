@@ -9,11 +9,9 @@ import {
 
 import MyTimer from "@/components/pomodoro/Timer";
 import { useEffect, useState } from "react";
-import "@/styles/Home.module.css";
 import { useAppState } from "@/context/appStateContext";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { state, dispatch } = useAppState();

@@ -2,7 +2,7 @@ import { useAppState } from "@/context/appStateContext";
 import Graph from "@/components/dashboard/Graph";
 import PieChart from "@/components/dashboard/PieChart";
 import StatCard from "@/components/dashboard/StatCard";
-import { DASHBOARD_DATA } from "@/data/gqlFetch";
+import { DASHBOARD_DATA } from "@/graphql/gqlQueries";
 import { Task } from "@/typings";
 import { useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -141,6 +141,7 @@ const Dashboard = () => {
         //   backdropFilter: "blur(10px)",
         // }}
       >
+        <Text>Tasks By priorities</Text>
         {dashboardData && (
           <Bar
             data={{
@@ -177,11 +178,15 @@ const Dashboard = () => {
             width={600}
             options={{
               maintainAspectRatio: false,
-              // scales: {
-              //   y: {
-              //     beginAtZero: true,
-              //   },
-              // },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1,
+                    precision: 0,
+                  }
+                },
+              },
             }}
           />
         )}

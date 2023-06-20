@@ -11,12 +11,11 @@ import {
   Meter,
 } from "grommet";
 import { useAppState } from "../../context/appStateContext";
-import styles from "@/styles/Home.module.css";
 import { PauseFill, PlayFill, PowerReset } from "grommet-icons";
 import { quotes } from "@/utils/quotes";
 import showNotification from "@/utils/notification";
 import { useMutation } from "@apollo/client";
-import { UPDATE_TASK } from "../../data/gqlFetch";
+import { UPDATE_TASK } from "../../graphql/gqlQueries";
 import { Task } from "@/typings";
 
 const MyTimer = () => {
