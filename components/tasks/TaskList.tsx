@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Button, Text, Heading, Layer } from "grommet";
 import { TaskListProps } from "@/typings";
 import TaskComponent from "./TaskComponent";
-import { useAppState } from "../context/appStateContext";
+import { useAppState } from "../../context/appStateContext";
 import { quotes } from "@/utils/quotes";
 import { Add } from "grommet-icons";
 import TaskForm from "./TaskForm";

@@ -10,11 +10,11 @@ import {
   Select,
 } from "grommet";
 import { Task } from "@/typings";
-import { useAppState } from "../context/appStateContext";
+import { useAppState } from "../../context/appStateContext";
 import { Add, Subtract } from "grommet-icons";
 import { parse } from "path";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, UPDATE_TASK } from "../data/gqlFetch";
+import { CREATE_TASK, UPDATE_TASK } from "../../data/gqlFetch";
 
 interface TaskFormProps {
   setShowTodoForm: (show: boolean) => void;

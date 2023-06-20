@@ -12,12 +12,12 @@ import {
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
 import { Filter as FLT, Task } from "@/typings";
-import { useAppState } from "../context/appStateContext";
+import { useAppState } from "../../context/appStateContext";
 import Link from "next/link";
 import { Filter, User } from "grommet-icons";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { DELETE_TASK, allTasks } from "../data/gqlFetch";
+import { DELETE_TASK, allTasks } from "../../data/gqlFetch";
 import FilterPopup from "../popups/FilterPopup";
 
 const TaskPage: FC = () => {

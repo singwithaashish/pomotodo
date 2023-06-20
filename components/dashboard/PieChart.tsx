@@ -1,6 +1,6 @@
 import { Meter } from "grommet";
 import React from "react";
-import { useAppState } from "../context/appStateContext";
+import { useAppState } from "../../context/appStateContext";
 
 function PieChart() {
   const { state, dispatch } = useAppState();

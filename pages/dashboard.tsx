@@ -1,8 +1,8 @@
-import { useAppState } from "@/components/context/appStateContext";
+import { useAppState } from "@/context/appStateContext";
 import Graph from "@/components/dashboard/Graph";
 import PieChart from "@/components/dashboard/PieChart";
 import StatCard from "@/components/dashboard/StatCard";
-import { DASHBOARD_DATA } from "@/components/data/gqlFetch";
+import { DASHBOARD_DATA } from "@/data/gqlFetch";
 import { Task } from "@/typings";
 import { useQuery } from "@apollo/client";
 import { useUser } from "@auth0/nextjs-auth0/client";

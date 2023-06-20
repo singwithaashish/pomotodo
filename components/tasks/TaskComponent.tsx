@@ -9,10 +9,11 @@ import {
   ResponsiveContext,
 } from "grommet";
 import React, { useEffect, useState } from "react";
-import { useAppState } from "../context/appStateContext";
+import { useAppState } from "../../context/appStateContext";
 import {
   Checkbox,
   Clock,
+  InProgress,
   More,
   StatusCritical,
   StatusGood,
@@ -20,7 +21,7 @@ import {
   Time,
 } from "grommet-icons";
 import { useMutation } from "@apollo/client";
-import { MARK_CHECKED, UPDATE_TASK } from "../data/gqlFetch";
+import { MARK_CHECKED, UPDATE_TASK } from "../../data/gqlFetch";
 
 interface TaskComponentProps {
   task: Task;
@@ -94,6 +95,9 @@ export default function TaskComponent({
     >
       <Box direction="row" align="center" gap="small">
         <Box direction="column" align="center" justify="center">
+          {
+            loading ? <InProgress/> : 
+          
           <CheckBox
             checked={task.completed}
             onChange={async () => {
@@ -109,6 +113,7 @@ export default function TaskComponent({
 
             }}
           />
+}
         </Box>
         <Box direction="column" justify="start">
           <ResponsiveContext.Consumer>
