@@ -1,7 +1,7 @@
 **PomoTodo** is a simple todo list app that uses the Pomodoro Technique to help you focus on your tasks.
 
 
-##Table of Contents##
+## Table of Contents
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
