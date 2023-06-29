@@ -21,19 +21,19 @@ import { Task } from "@/typings";
 const MyTimer = () => {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
-  const [updateTaskgql, {data, loading, error}] = useMutation(UPDATE_TASK);
+  const [updateTaskgql, { data, loading, error }] = useMutation(UPDATE_TASK);
   const [breakTime, setBreakTime] = useState(false);
   const [cycles, setCycles] = useState(0);
-  
+
   const { state, dispatch } = useAppState();
 
   const [totalSeconds, setTotalSeconds] = useState(0);
 
   useEffect(() => {
-    if(data) {
-      dispatch({type: 'UPDATE_TASK', task: data.updateTask})
+    if (data) {
+      dispatch({ type: "UPDATE_TASK", task: data.updateTask });
     }
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
@@ -67,6 +67,10 @@ const MyTimer = () => {
               updateTask();
             }
             setMinutes(breakTime ? 25 : (cycles + 1) % 4 === 0 ? 15 : 5);
+
+            if (cycles > 3) {
+              setCycles(0);
+            }
           } else {
             setMinutes(minutes - 1);
             setSeconds(59);
@@ -81,24 +85,29 @@ const MyTimer = () => {
 
   const updateTask = async () => {
     try {
-      let temp : Task = state.currentTask ?? state.tasks[0];
-      temp.timeSpent = (temp.timeSpent || 0) + 25
+      let temp: Task = state.currentTask ?? state.tasks[0];
+      temp.timeSpent = (temp.timeSpent || 0) + 25;
       temp.tomatoes -= 1;
       // dispatch({type: 'UPDATE_TASK', task: {...state.currentTask!, tomatoes: state.currentTask!.tomatoes - 1, timeSpent: (state.currentTask!.timeSpent || 0) + 25 * 60}})
-     await updateTaskgql({
+      await updateTaskgql({
         variables: temp,
-      })
-      
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
   const startTimer = () => {
-if(state.currentTask === null){
-  dispatch({type: 'SET_CURRENT_TASK', task: state.tasks[0]})
-}
-    setTotalSeconds(state.sessionType === "work" ? 1500 : state.sessionType === "shortBreak" ? 300 : 900);
+    if (state.currentTask === null) {
+      dispatch({ type: "SET_CURRENT_TASK", task: state.tasks[0] });
+    }
+    setTotalSeconds(
+      state.sessionType === "work"
+        ? 1500
+        : state.sessionType === "shortBreak"
+        ? 300
+        : 900
+    );
     console.log(totalSeconds);
     state.isSessionActive
       ? null
@@ -193,7 +202,6 @@ if(state.currentTask === null){
           </Box>
 
           <Stack anchor="center">
-            
             <Box
               style={{
                 height: size === "small" ? "80vw" : "60vh",
@@ -230,7 +238,12 @@ if(state.currentTask === null){
                 style={{
                   // fontSize: "5rem",
                   // marginBottom: "10rem",
-                  color: state.sessionType === "work" ? "#ea580c" : state.sessionType === "shortBreak" ? "#84cc16" : "#4d7c0f",
+                  color:
+                    state.sessionType === "work"
+                      ? "#ea580c"
+                      : state.sessionType === "shortBreak"
+                      ? "#84cc16"
+                      : "#4d7c0f",
                 }}
               >{`${minutes.toString().padStart(2, "0")}:${seconds
                 .toString()
@@ -247,9 +260,14 @@ if(state.currentTask === null){
                   background="light-2"
                   values={[
                     {
-                      value: 100 -
-                      ((minutes * 60 + seconds) / totalSeconds) * 100,
-                      color: state.sessionType === "work" ? "#ea580c" : state.sessionType === "shortBreak" ? "#84cc16" : "#4d7c0f",
+                      value:
+                        100 - ((minutes * 60 + seconds) / totalSeconds) * 100,
+                      color:
+                        state.sessionType === "work"
+                          ? "#ea580c"
+                          : state.sessionType === "shortBreak"
+                          ? "#84cc16"
+                          : "#4d7c0f",
                     },
                   ]}
                   size="xxlarge"
