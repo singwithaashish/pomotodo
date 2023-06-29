@@ -49,37 +49,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
         }}
       >
         {tasks
-          .sort((a, b) => {
-            if (state.appliedFilters?.sort !== "all") {
-              if (state.appliedFilters?.sort === "created") {
-                // console.log("filtering by created");
-                return (
-                  new Date(a.createdAt!).getTime() -
-                  new Date(b.createdAt!).getTime()
-                );
-              } else if (state.appliedFilters?.sort === "due") {
-                return (
-                  new Date(a.dueDate!).getTime() -
-                  new Date(b.dueDate!).getTime()
-                );
-              } else if (state.appliedFilters?.sort === "updated") {
-                return (
-                  new Date(a.updatedAt!).getTime() -
-                  new Date(b.updatedAt!).getTime()
-                );
-              } else if (state.appliedFilters?.sort === "priority") {
-                return a.priority === "high"
-                  ? -1
-                  : a.priority === "medium"
-                  ? 0
-                  : 1;
-              } else {
-                return 0;
-              }
-            } else {
-              return 0;
-            }
-          })
           .filter((task) => {
             if (state.appliedFilters?.show !== "all") {
               if (state.appliedFilters?.show === "completed") {
@@ -97,6 +66,33 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onDelete, onEdit }) => {
             }
           })
           .sort((a, b) => {
+            if (state.appliedFilters?.sort !== "all") {
+              if (state.appliedFilters?.sort === "created") {
+                return (
+                  new Date(a.createdAt!).getTime() -
+                  new Date(b.createdAt!).getTime()
+                );
+              } else if (state.appliedFilters?.sort === "due") {
+                return (
+                  new Date(a.dueDate!).getTime() -
+                  new Date(b.dueDate!).getTime()
+                );
+              } else if (state.appliedFilters?.sort === "updated") {
+                return (
+                  new Date(a.updatedAt!).getTime() -
+                  new Date(b.updatedAt!).getTime()
+                );
+              } else if (state.appliedFilters?.sort === "priority") {
+                const priorityMap = {
+                  high: 3,
+                  medium: 2,
+                  low: 1,
+                };
+
+                return priorityMap[b.priority] - priorityMap[a.priority];
+              }
+            }
+
             if (state.appliedFilters?.order === "asc") {
               return (
                 new Date(a.createdAt!).getTime() -
